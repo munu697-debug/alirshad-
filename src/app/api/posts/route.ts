@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sanitizeArticleHtml } from "@/lib/sanitize";
+import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/auth";
 import { getPosts, savePost } from "@/lib/db-service";
 
@@ -41,6 +42,7 @@ export async function POST(req: NextRequest) {
 
     const slug = String(body.slug || "").trim() || `post-${Date.now()}`;
     const saved = await savePost({ ...body, slug, content: sanitizeArticleHtml(body.content) });
+    revalidatePath("/", "layout");
     return NextResponse.json({ success: true, post: saved }, { status: 201 });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

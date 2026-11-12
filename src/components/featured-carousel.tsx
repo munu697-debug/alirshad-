@@ -39,11 +39,13 @@ export function FeaturedCarousel({ posts }: FeaturedCarouselProps) {
     <div className="relative w-full aspect-video md:aspect-auto md:h-[340px] mb-12 sm:mb-16 overflow-hidden bg-gray-900 group rounded-2xl sm:rounded-3xl shadow-xl">
       {/* Background Image */}
       <div className="relative w-full h-full">
-        <img
-          src={currentPost.featured_image}
-          alt={currentPost.title}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
+        {currentPost.featured_image && (
+          <img
+            src={currentPost.featured_image}
+            alt={currentPost.title}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+        )}
         {/* Dark Editorial Gradient Overlays */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/50 to-black/20 pointer-events-none" />
       </div>

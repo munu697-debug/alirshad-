@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sanitizeArticleHtml } from "@/lib/sanitize";
+import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/auth";
 import { getPostById, savePost, deletePost } from "@/lib/db-service";
 
@@ -29,6 +30,7 @@ export async function PUT(
     const { id } = await params;
     const body = await req.json();
     const updated = await savePost({ ...body, ...(typeof body.content === "string" ? { content: sanitizeArticleHtml(body.content) } : {}), id });
+    revalidatePath("/", "layout");
     return NextResponse.json({ success: true, post: updated });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -44,6 +46,7 @@ export async function DELETE(
     if (denied) return denied;
     const { id } = await params;
     const deleted = await deletePost(id);
+    revalidatePath("/", "layout");
     return NextResponse.json({ success: deleted });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

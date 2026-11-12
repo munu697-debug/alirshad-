@@ -72,7 +72,7 @@ export default function NewPostPage() {
       slug: slug.trim() || generateSlug(title),
       excerpt: excerpt.trim(),
       content: content.trim(),
-      featured_image: featuredImage || "https://images.unsplash.com/photo-1544717305-2782549b5136?w=1200&q=80",
+      featured_image: featuredImage || "",
       author_name: authorName.trim(),
       category_id: categoryId || null,
       category_name: categoryObj?.name || "Feature",
