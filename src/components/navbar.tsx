@@ -82,7 +82,7 @@ export function Navbar() {
               <Link href="/" className="inline-block group">
                 <div className="h-10 sm:h-12 md:h-14 w-52 sm:w-64 md:w-80 flex items-center justify-center">
                   <img
-                    src="/images/logo.png"
+                    src="/images/logo.webp"
                     alt="Al Irshad"
                     className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
                   />

@@ -50,7 +50,7 @@ export default function SignUpPage() {
           <Link href="/" className="inline-block mb-4">
             <div className="h-10 w-52 mx-auto flex items-center justify-center">
               <img
-                src="/images/logo.png"
+                src="/images/logo.webp"
                 alt="Al Irshad"
                 className="h-full w-full object-contain"
               />

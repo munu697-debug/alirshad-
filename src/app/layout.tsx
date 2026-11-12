@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "Home | Al Irshad",
   description: "Al Irshad - Malayalam articles, literature, stories, and thought-provoking blog posts.",
   icons: {
-    icon: "/favicon.png",
+    icon: "/favicon.webp",
   },
 };
 
@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="ml">
       <head>
-        <link rel="icon" href="/favicon.png" />
+        <link rel="icon" href="/favicon.webp" />
         <link
           rel="preload"
           href="/Noto_Serif_Malayalam/NotoSerifMalayalam-VariableFont_wght.ttf"

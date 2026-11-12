@@ -52,7 +52,7 @@ export function Footer() {
           <Link href="/" className="inline-block">
             <div className="h-11 w-64 brightness-0 invert opacity-90 hover:opacity-100 transition-opacity flex items-center">
               <img
-                src="/images/logo.png"
+                src="/images/logo.webp"
                 alt="Al Irshad"
                 className="h-full w-full object-contain object-left"
               />
