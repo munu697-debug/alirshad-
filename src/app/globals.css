@@ -1,0 +1,88 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Noto+Serif+Malayalam:wght@400;500;600;700;800;900&family=Manjari:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-color: #ffffff;
+  --header-bg: #ffffff;
+  --accent: #0056FF;        /* 01 Royal Blue */
+  --accent-hover: #2277FF;  /* 02 Azure Blue */
+  --accent-light: #E3E7FC;  /* 04 Soft Lavender */
+  --accent-dark: #0036CC;
+  --text-primary: #000000;  /* 03 Black */
+  --text-secondary: #334155;
+  --card-bg: #ffffff;
+  --card-shadow: 0 4px 20px rgba(0, 86, 255, 0.04);
+  --card-shadow-hover: 0 12px 30px rgba(0, 86, 255, 0.12);
+  --border-color: #E2E8F0;
+  --error: #f04438;
+  --success: #12b76a;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #ffffff;
+  color: #000000;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: clip;
+}
+
+::selection {
+  background-color: #E3E7FC;
+  color: #0056FF;
+}
+
+.font-malayalam {
+  font-family: 'Noto Serif Malayalam', 'Manjari', serif;
+}
+
+.font-editorial {
+  font-family: 'Playfair Display', serif;
+}
+
+/* Custom scrollbars */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Tiptap editorial prose content styling */
+.prose {
+  color: #1e293b;
+}
+
+.prose p {
+  margin-bottom: 1.5rem;
+  line-height: 1.85;
+}
+
+.prose h1, .prose h2, .prose h3 {
+  color: #000000;
+  font-weight: 700;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.prose blockquote {
+  border-left: 4px solid #0056FF;
+  padding-left: 1.25rem;
+  font-style: italic;
+  color: #1e293b;
+  margin: 1.5rem 0;
+  background: #F4F6FE;
+  padding: 1rem 1.25rem;
+  border-radius: 0 0.75rem 0.75rem 0;
+}
+
+.prose img {
+  border-radius: 1rem;
+  margin: 2rem 0;
+  box-shadow: 0 10px 25px -5px rgba(0, 86, 255, 0.08);
+}
