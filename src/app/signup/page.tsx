@@ -21,23 +21,24 @@ export default function SignUpPage() {
     setErrorMsg(null);
 
     try {
-      const supabase = createClient();
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: { display_name: name },
-        },
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
       });
 
-      if (error) {
-        // Fallback for demonstration
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new Event("auth-changed"));
+        }
         setSuccess(true);
       } else {
-        setSuccess(true);
+        setErrorMsg(data.error || "Failed to create account. Please check your details.");
       }
     } catch {
-      setSuccess(true);
+      setErrorMsg("Connection error. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -74,12 +75,20 @@ export default function SignUpPage() {
             <p className="text-xs text-secondary mb-6">
               Your account has been created successfully. You can now log in or continue browsing.
             </p>
-            <Link
-              href="/login"
-              className="inline-block px-6 py-2.5 bg-accent text-white font-semibold text-xs rounded-xl hover:bg-accent-hover transition-colors"
-            >
-              Go to Login
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-2 justify-center">
+              <Link
+                href="/"
+                className="inline-block px-5 py-2.5 bg-accent text-white font-semibold text-xs rounded-xl hover:bg-accent-hover transition-colors shadow-royal"
+              >
+                Go to Homepage
+              </Link>
+              <Link
+                href="/login"
+                className="inline-block px-5 py-2.5 bg-surface text-primary border border-gray-200 font-semibold text-xs rounded-xl hover:bg-gray-50 transition-colors"
+              >
+                Go to Login
+              </Link>
+            </div>
           </div>
         ) : (
           <form onSubmit={handleSignUp} className="space-y-4">
