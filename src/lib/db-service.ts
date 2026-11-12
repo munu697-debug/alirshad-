@@ -30,7 +30,7 @@ export async function getPosts(options?: {
     const supabase = await createClient();
     let query = supabase
       .from('posts')
-      .select('*, categories(id, name, slug), issues(id, title, slug, cover_image)');
+      .select('*, categories(id, name, slug)');
 
     if (status !== 'all') query = query.eq('status', status);
     if (featuredOnly) query = query.eq('is_featured', true);
@@ -64,7 +64,7 @@ export async function getPosts(options?: {
 
     const { data, error } = await query;
     if (error) {
-      console.error('getPosts error:', error.message);
+      console.warn('getPosts fallback:', error.message);
       return [];
     }
     return (data as Post[]) ?? [];
@@ -82,7 +82,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
     const supabase = await createClient();
     const { data, error } = await supabase
       .from('posts')
-      .select('*, categories(id, name, slug), issues(id, title, slug, cover_image)')
+      .select('*, categories(id, name, slug)')
       .eq('slug', decodeURIComponent(slug))
       .single();
     if (error) return null;
@@ -100,7 +100,7 @@ export async function getPostById(id: string): Promise<Post | null> {
     const supabase = await createClient();
     const { data, error } = await supabase
       .from('posts')
-      .select('*, categories(id, name, slug), issues(id, title, slug, cover_image)')
+      .select('*, categories(id, name, slug)')
       .eq('id', id)
       .single();
     if (error) return null;
@@ -166,7 +166,7 @@ export async function getIssues(options?: { publishedOnly?: boolean }): Promise<
 
   try {
     const supabase = await createClient();
-    let query = supabase.from('issues').select('*, posts(count)');
+    let query = supabase.from('issues').select('*');
 
     if (publishedOnly) {
       query = query.eq('is_published', true);
@@ -179,17 +179,15 @@ export async function getIssues(options?: { publishedOnly?: boolean }): Promise<
 
     const { data, error } = await query;
     if (error) {
-      console.error('getIssues error:', error.message);
       return [];
     }
 
     return (data || []).map((item: any) => ({
       ...item,
-      articles_count: item.posts?.[0]?.count ?? 0,
+      articles_count: item.articles_count ?? 0,
     })) as Issue[];
   } catch (err: any) {
     if (err?.digest === 'DYNAMIC_SERVER_USAGE') throw err;
-    console.error('getIssues exception:', err);
     return [];
   }
 }
@@ -201,16 +199,13 @@ export async function getIssueBySlug(slug: string): Promise<Issue | null> {
     const supabase = await createClient();
     const { data, error } = await supabase
       .from('issues')
-      .select('*, posts(count)')
+      .select('*')
       .eq('slug', decodeURIComponent(slug))
       .single();
 
     if (error || !data) return null;
 
-    return {
-      ...data,
-      articles_count: data.posts?.[0]?.count ?? 0,
-    } as Issue;
+    return data as Issue;
   } catch (err: any) {
     if (err?.digest === 'DYNAMIC_SERVER_USAGE') throw err;
     return null;
