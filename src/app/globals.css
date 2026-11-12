@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
 
 /* Local Noto Serif Malayalam Font Faces from /public/Noto_Serif_Malayalam */
 @font-face {
@@ -63,6 +62,10 @@
 @tailwind utilities;
 
 :root {
+  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-noto-serif: "Noto Serif Malayalam", "Noto Serif Malayalam Fallback";
+  /* English glyphs use the serif stack; Malayalam glyphs fall through to Noto Serif Malayalam */
+  --font-site: var(--font-serif), var(--font-noto-serif), serif;
   --bg-color: #ffffff;
   --header-bg: #ffffff;
   --accent: #0056FF;        /* 01 Royal Blue */
@@ -80,7 +83,7 @@
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, "Noto Serif Malayalam", "Noto Serif Malayalam Fallback", serif;
   background-color: #ffffff;
   color: #000000;
   min-height: 100vh;
@@ -95,11 +98,11 @@ body {
 }
 
 .font-malayalam {
-  font-family: 'Noto Serif Malayalam', serif;
+  font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, "Noto Serif Malayalam", "Noto Serif Malayalam Fallback", serif;
 }
 
 .font-editorial {
-  font-family: 'Playfair Display', serif;
+  font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, "Noto Serif Malayalam", "Noto Serif Malayalam Fallback", serif;
 }
 
 /* Custom scrollbars */

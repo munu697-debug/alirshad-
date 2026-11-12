@@ -34,9 +34,9 @@ const config: Config = {
         "soft-glow": "linear-gradient(180deg, #FFFFFF 0%, #F5F7FF 100%)",
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "Inter", "sans-serif"],
-        serif: ["var(--font-playfair)", "Playfair Display", "serif"],
-        malayalam: ["'Noto Serif Malayalam'", "'Manjari'", "serif"],
+        sans: ["ui-serif", "Georgia", "Cambria", "\"Times New Roman\"", "Times", "\"Noto Serif Malayalam\"", "\"Noto Serif Malayalam Fallback\"", "serif"],
+        serif: ["ui-serif", "Georgia", "Cambria", "\"Times New Roman\"", "Times", "\"Noto Serif Malayalam\"", "\"Noto Serif Malayalam Fallback\"", "serif"],
+        malayalam: ["ui-serif", "Georgia", "Cambria", "\"Times New Roman\"", "Times", "\"Noto Serif Malayalam\"", "\"Noto Serif Malayalam Fallback\"", "serif"],
       },
       borderRadius: {
         "2xl": "1.25rem",
