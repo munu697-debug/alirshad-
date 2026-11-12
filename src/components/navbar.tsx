@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Search, Menu, X } from "lucide-react";
 import type { Category } from "@/lib/types";
@@ -81,14 +80,11 @@ export function Navbar() {
             {/* Center: Brand Logo */}
             <div className="flex-shrink-0 text-center">
               <Link href="/" className="inline-block group">
-                <div className="relative h-10 sm:h-12 md:h-14 w-52 sm:w-64 md:w-80">
-                  <Image
+                <div className="h-10 sm:h-12 md:h-14 w-52 sm:w-64 md:w-80 flex items-center justify-center">
+                  <img
                     src="/images/logo.png"
                     alt="Al Irshad"
-                    fill
-                    priority
-                    sizes="(max-width: 640px) 208px, (max-width: 768px) 256px, 320px"
-                    className="object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+                    className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
                   />
                 </div>
               </Link>

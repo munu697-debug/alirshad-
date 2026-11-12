@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowRight, Send, CheckCircle2 } from "lucide-react";
 import type { Category } from "@/lib/types";
 
@@ -51,12 +50,11 @@ export function Footer() {
         {/* Footer Brand Logo */}
         <div className="mb-10 pb-8 border-b border-gray-800/80">
           <Link href="/" className="inline-block">
-            <div className="relative h-11 w-64 brightness-0 invert opacity-90 hover:opacity-100 transition-opacity">
-              <Image
+            <div className="h-11 w-64 brightness-0 invert opacity-90 hover:opacity-100 transition-opacity flex items-center">
+              <img
                 src="/images/logo.png"
                 alt="Al Irshad"
-                fill
-                className="object-contain object-left"
+                className="h-full w-full object-contain object-left"
               />
             </div>
           </Link>

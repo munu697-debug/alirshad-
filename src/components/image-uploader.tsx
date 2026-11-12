@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { Upload, X, Link as LinkIcon, Loader2 } from "lucide-react";
 
 interface ImageUploaderProps {
@@ -85,7 +84,7 @@ export function ImageUploader({ value, onChange, label = "Featured Image" }: Ima
 
       {value ? (
         <div className="relative w-full h-48 sm:h-64 rounded-xl overflow-hidden border border-gray-200 group bg-gray-50">
-          <Image src={value} alt="Preview" fill className="object-cover" />
+          <img src={value} alt="Preview" className="w-full h-full object-cover" />
           <button
             type="button"
             onClick={() => onChange("")}

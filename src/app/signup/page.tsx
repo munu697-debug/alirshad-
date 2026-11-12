@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Mail, Lock, User, Loader2, CheckCircle2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -49,13 +48,11 @@ export default function SignUpPage() {
       <div className="max-w-md w-full bg-white p-8 sm:p-10 rounded-3xl border border-gray-100 shadow-[0_4px_25px_rgba(16,24,40,0.04)]">
         <div className="text-center mb-8">
           <Link href="/" className="inline-block mb-4">
-            <div className="relative h-10 w-52 mx-auto">
-              <Image
+            <div className="h-10 w-52 mx-auto flex items-center justify-center">
+              <img
                 src="/images/logo.png"
                 alt="Al Irshad"
-                fill
-                priority
-                className="object-contain"
+                className="h-full w-full object-contain"
               />
             </div>
           </Link>

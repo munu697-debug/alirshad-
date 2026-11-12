@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Calendar, User, Clock, Eye } from "lucide-react";
@@ -104,12 +103,10 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
       {post.featured_image && (
         <div className="-mx-4 sm:mx-auto max-w-5xl mb-10 sm:mb-14 rounded-none sm:rounded-3xl overflow-hidden shadow-lg border border-gray-100">
           <div className="relative w-full h-64 sm:h-96 md:h-[480px]">
-            <Image
+            <img
               src={post.featured_image}
               alt={post.title}
-              fill
-              priority
-              className="object-cover"
+              className="w-full h-full object-cover"
             />
           </div>
         </div>

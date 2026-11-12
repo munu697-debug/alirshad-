@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Clock, Calendar, Eye, Heart } from "lucide-react";
 import { Post } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
@@ -27,13 +26,13 @@ export function ArticleCard({ post, variant = "standard" }: ArticleCardProps) {
         {post.featured_image && (
           <Link
             href={`/post/${post.slug}`}
-            className="relative w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100"
+            className="relative w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100 block"
           >
-            <Image
+            <img
               src={post.featured_image}
               alt={post.title}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              loading="lazy"
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
           </Link>
         )}
@@ -46,13 +45,13 @@ export function ArticleCard({ post, variant = "standard" }: ArticleCardProps) {
       <article className="group bg-white rounded-2xl border border-gray-100 shadow-card hover:shadow-card-hover hover:border-accent/25 transition-all duration-300 overflow-hidden flex flex-col sm:flex-row">
         <Link
           href={`/post/${post.slug}`}
-          className="relative w-full sm:w-2/5 h-48 sm:h-auto overflow-hidden bg-gray-100 flex-shrink-0"
+          className="relative w-full sm:w-2/5 h-48 sm:h-auto overflow-hidden bg-gray-100 flex-shrink-0 block"
         >
-          <Image
+          <img
             src={post.featured_image}
             alt={post.title}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            loading="lazy"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
         </Link>
         <div className="p-5 sm:p-6 flex flex-col justify-between flex-1">
@@ -99,12 +98,12 @@ export function ArticleCard({ post, variant = "standard" }: ArticleCardProps) {
   return (
     <article className="group bg-white rounded-2xl border border-gray-100 shadow-card hover:shadow-card-hover hover:border-accent/25 transition-all duration-300 overflow-hidden flex flex-col h-full">
       {/* Featured Image */}
-      <Link href={`/post/${post.slug}`} className="relative w-full aspect-[16/10] overflow-hidden bg-gray-100">
-        <Image
+      <Link href={`/post/${post.slug}`} className="relative w-full aspect-[16/10] overflow-hidden bg-gray-100 block">
+        <img
           src={post.featured_image}
           alt={post.title}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
+          loading="lazy"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
         <div className="absolute top-3 left-3">
           <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-white/95 backdrop-blur-sm text-accent rounded-lg shadow-sm">
