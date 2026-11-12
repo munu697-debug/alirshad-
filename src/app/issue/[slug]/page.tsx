@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getIssueBySlug, getPosts } from "@/lib/db-service";
-import { SAMPLE_ISSUES } from "@/lib/sample-issues";
 import { ArticleCard } from "@/components/article-card";
 import { Calendar, Layers, ArrowLeft, BookOpen, Share2 } from "lucide-react";
 import type { Metadata } from "next";
@@ -12,7 +11,7 @@ interface IssuePageProps {
 
 export async function generateMetadata({ params }: IssuePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const issue = (await getIssueBySlug(slug)) || SAMPLE_ISSUES.find((i) => i.slug === slug);
+  const issue = await getIssueBySlug(slug);
 
   if (!issue) {
     return { title: "Issue Not Found | Al Irshad" };
@@ -33,31 +32,17 @@ export const revalidate = 60;
 
 export default async function IssueDetailPage({ params }: IssuePageProps) {
   const { slug } = await params;
-  let issue = await getIssueBySlug(slug);
+  const issue = await getIssueBySlug(slug);
 
-  // Fallback to sample issue if not found in db
   if (!issue) {
-    const sample = SAMPLE_ISSUES.find((i) => i.slug === slug);
-    if (sample) {
-      issue = sample;
-    } else {
-      notFound();
-    }
+    notFound();
   }
 
-  // Fetch articles associated with this issue
-  let issuePosts = await getPosts({
+  // Fetch articles actually associated with this issue
+  const issuePosts = await getPosts({
     issueId: issue.id,
     status: "published",
   });
-
-  // If no posts are directly linked to this issue yet, fetch recent posts so the page looks complete
-  if (issuePosts.length === 0) {
-    const allPosts = await getPosts({ status: "published", limit: 6 });
-    if (allPosts.length > 0) {
-      issuePosts = allPosts;
-    }
-  }
 
   const coverStory = issuePosts.find((p) => p.is_cover_story) || (issuePosts.length > 0 ? issuePosts[0] : null);
   const remainingPosts = coverStory ? issuePosts.filter((p) => p.id !== coverStory.id) : issuePosts;
