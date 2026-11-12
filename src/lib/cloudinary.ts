@@ -1,25 +1,38 @@
 import { v2 as cloudinary } from 'cloudinary';
 
-cloudinary.config({
-  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || '',
-  api_key: process.env.CLOUDINARY_API_KEY || '',
-  api_secret: process.env.CLOUDINARY_API_SECRET || '',
-  secure: true,
-});
+// Configure Cloudinary: supports separate keys or single CLOUDINARY_URL
+const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_CLOUD_NAME || '';
+const apiKey = process.env.CLOUDINARY_API_KEY || '';
+const apiSecret = process.env.CLOUDINARY_API_SECRET || '';
+const cloudinaryUrl = process.env.CLOUDINARY_URL || '';
+
+if (cloudinaryUrl) {
+  cloudinary.config({ secure: true });
+} else if (cloudName && apiKey && apiSecret) {
+  cloudinary.config({
+    cloud_name: cloudName,
+    api_key: apiKey,
+    api_secret: apiSecret,
+    secure: true,
+  });
+}
 
 export async function uploadToCloudinary(
   fileBufferOrBase64: string,
   folder = 'alirshad'
 ): Promise<{ url: string; public_id: string } | null> {
-  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const isConfigured = Boolean(
+    process.env.CLOUDINARY_URL ||
+    ((process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME || process.env.CLOUDINARY_CLOUD_NAME) && process.env.CLOUDINARY_API_KEY)
+  );
   
-  if (!cloudName || !process.env.CLOUDINARY_API_KEY) {
+  if (!isConfigured) {
     console.warn('Cloudinary environment variables not configured. Returning local/raw URL.');
     return {
       url: fileBufferOrBase64.startsWith('data:') 
         ? fileBufferOrBase64 
         : `https://images.unsplash.com/photo-1544717305-2782549b5136?w=1200&q=80`,
-      public_id: 'mock_upload_' + Date.now(),
+      public_id: 'upload_' + Date.now(),
     };
   }
 
