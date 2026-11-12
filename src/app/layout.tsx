@@ -22,10 +22,17 @@ export default function RootLayout({
     <html lang="ml">
       <head>
         <link rel="icon" href="/favicon.png" />
+        <link
+          rel="preload"
+          href="/Noto_Serif_Malayalam/NotoSerifMalayalam-VariableFont_wght.ttf"
+          as="font"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Noto+Serif+Malayalam:wght@400;500;600;700;800;900&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap"
           rel="stylesheet"
         />
       </head>
