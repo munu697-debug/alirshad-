@@ -1,8 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
+import { clientIp, rateLimit } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
+    if (!rateLimit(`signup:${clientIp(req)}`, 5, 60 * 60 * 1000)) {
+      return NextResponse.json(
+        { error: "Too many sign-ups. Please try again later." },
+        { status: 429 }
+      );
+    }
+
     const { name, email, password } = await req.json();
 
     if (!email || !password) {
@@ -12,9 +21,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (password.length < 6) {
+    if (String(password).length < 8) {
       return NextResponse.json(
-        { error: "Password must be at least 6 characters long." },
+        { error: "Password must be at least 8 characters long." },
         { status: 400 }
       );
     }
@@ -22,6 +31,11 @@ export async function POST(req: NextRequest) {
     const cleanEmail = String(email).trim().toLowerCase();
     const displayName = String(name || cleanEmail.split("@")[0]).trim();
     const initial = displayName.charAt(0).toUpperCase();
+
+    const adminEmail = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
+    if (adminEmail && cleanEmail === adminEmail) {
+      return NextResponse.json({ error: "This email cannot be registered." }, { status: 400 });
+    }
 
     const supabase = createAdminClient();
 
@@ -71,7 +85,14 @@ export async function POST(req: NextRequest) {
       status: "active",
     }, { onConflict: "email" });
 
-    // 4. Set session cookie for immediate client-side login
+    // 4. Establish a real Supabase session so the user is actually authenticated
+    try {
+      const userClient = await createClient();
+      await userClient.auth.signInWithPassword({ email: cleanEmail, password: String(password).trim() });
+    } catch {
+      // user can still log in manually
+    }
+
     const response = NextResponse.json({
       success: true,
       message: "Account created successfully!",
@@ -99,13 +120,13 @@ export async function POST(req: NextRequest) {
     });
 
     // Ensure admin cookie is not set for regular readers
-    response.cookies.delete("admin_auth");
+    response.cookies.delete("admin_session");
 
     return response;
   } catch (error: any) {
     console.error("Signup error:", error);
     return NextResponse.json(
-      { error: error?.message || "Failed to create account. Please try again." },
+      { error: "Failed to create account. Please try again." },
       { status: 500 }
     );
   }

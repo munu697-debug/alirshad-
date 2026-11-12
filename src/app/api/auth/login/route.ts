@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { ADMIN_COOKIE, SESSION_MAX_AGE, clientIp, createAdminToken, rateLimit, safeEqual } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
+    if (!rateLimit(`login:${clientIp(req)}`, 10, 15 * 60 * 1000)) {
+      return NextResponse.json(
+        { error: "Too many attempts. Please try again later." },
+        { status: 429 }
+      );
+    }
+
     const { email, password } = await req.json();
 
     if (!email || !password) {
@@ -20,7 +28,13 @@ export async function POST(req: NextRequest) {
     const adminPassword = (process.env.ADMIN_PASSWORD || "").trim();
 
     // 1. Admin Login (Sole manager who has access to /dashboard)
-    if (adminEmail && adminPassword && cleanEmail === adminEmail && cleanPassword === adminPassword) {
+    const emailOk = await safeEqual(cleanEmail, adminEmail);
+    const passOk = await safeEqual(cleanPassword, adminPassword);
+    if (adminEmail && adminPassword && emailOk && passOk) {
+      const token = await createAdminToken(adminEmail);
+      if (!token) {
+        return NextResponse.json({ error: "Server auth is not configured." }, { status: 500 });
+      }
       const response = NextResponse.json({
         success: true,
         role: "admin",
@@ -33,13 +47,13 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      // Set secure admin authentication cookie
-      response.cookies.set("admin_auth", "true", {
+      // Signed, httpOnly admin session cookie
+      response.cookies.set(ADMIN_COOKIE, token, {
         path: "/",
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
-        maxAge: 60 * 60 * 24 * 30, // 30 days
+        maxAge: SESSION_MAX_AGE,
       });
 
       // Set user session cookie for UI navbar
@@ -85,7 +99,7 @@ export async function POST(req: NextRequest) {
         });
 
         // Ensure admin cookie is REMOVED if previously present
-        response.cookies.delete("admin_auth");
+        response.cookies.delete(ADMIN_COOKIE);
 
         // Set user session cookie for UI navbar
         response.cookies.set("user_session", JSON.stringify({

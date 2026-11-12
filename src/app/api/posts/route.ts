@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { sanitizeArticleHtml } from "@/lib/sanitize";
+import { requireAdmin } from "@/lib/auth";
 import { getPosts, savePost } from "@/lib/db-service";
 
 export async function GET(req: NextRequest) {
@@ -30,12 +32,14 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    const denied = await requireAdmin(req);
+    if (denied) return denied;
     const body = await req.json();
     if (!body.title || !body.content) {
       return NextResponse.json({ error: "Title and content are required" }, { status: 400 });
     }
 
-    const saved = await savePost(body);
+    const saved = await savePost({ ...body, content: sanitizeArticleHtml(body.content) });
     return NextResponse.json({ success: true, post: saved }, { status: 201 });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

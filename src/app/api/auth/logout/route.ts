@@ -6,7 +6,8 @@ export async function POST(req: NextRequest) {
     const response = NextResponse.json({ success: true });
 
     // Clear admin and user session cookies
-    response.cookies.delete("admin_auth");
+    response.cookies.delete("admin_session");
+    response.cookies.delete("admin_auth"); // legacy
     response.cookies.delete("user_session");
 
     // Clear Supabase session if any

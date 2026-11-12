@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/auth";
 
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const denied = await requireAdmin(req);
+    if (denied) return denied;
     const { id } = await params;
     const body = await req.json();
     // Support comment editing
@@ -19,6 +22,8 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const denied = await requireAdmin(req);
+    if (denied) return denied;
     const { id } = await params;
     return NextResponse.json({ success: true, id });
   } catch (error: any) {

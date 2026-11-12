@@ -365,11 +365,13 @@ export async function addComment(commentData: Partial<Comment>): Promise<Comment
 
   try {
     const supabase = await createClient();
+    // Never trust a client-supplied user_id; derive it from the verified session.
+    const { data: { user: sessionUser } } = await supabase.auth.getUser();
     const { data, error } = await supabase
       .from('comments')
       .insert({
         post_id: commentData.post_id,
-        user_id: commentData.user_id ?? null,
+        user_id: sessionUser?.id ?? null,
         name: commentData.name || 'Anonymous',
         email: commentData.email ?? null,
         is_anonymous: Boolean(commentData.is_anonymous),

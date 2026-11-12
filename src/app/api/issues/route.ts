@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/auth";
 import { getIssues, saveIssue } from "@/lib/db-service";
 
 export async function GET(req: NextRequest) {
@@ -14,6 +15,8 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
+    const denied = await requireAdmin(req);
+    if (denied) return denied;
     const body = await req.json();
     if (!body.title || !body.cover_image) {
       return NextResponse.json({ error: "Title and Cover Image are required" }, { status: 400 });

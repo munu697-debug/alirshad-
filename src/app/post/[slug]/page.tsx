@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { sanitizeArticleHtml } from "@/lib/sanitize";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Calendar, User, Clock, Eye } from "lucide-react";
@@ -129,7 +130,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           <div
             id="article-main-content"
             className="prose prose-lg max-w-none text-base sm:text-lg font-malayalam leading-relaxed text-[#2c3437] select-text"
-            dangerouslySetInnerHTML={{ __html: post.content }}
+            dangerouslySetInnerHTML={{ __html: sanitizeArticleHtml(post.content) }}
           />
 
           {/* Tags */}

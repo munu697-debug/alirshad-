@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { requireAdmin } from "@/lib/auth";
 import { getIssueById, saveIssue, deleteIssue } from "@/lib/db-service";
 
 export async function GET(
@@ -22,6 +23,8 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const denied = await requireAdmin(req);
+    if (denied) return denied;
     const { id } = await params;
     const body = await req.json();
 
@@ -45,6 +48,8 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const denied = await requireAdmin(req);
+    if (denied) return denied;
     const { id } = await params;
     const success = await deleteIssue(id);
     if (!success) {
