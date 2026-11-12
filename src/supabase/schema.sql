@@ -117,6 +117,7 @@ CREATE TABLE IF NOT EXISTS public.comment_reports (
 -- Enable Row Level Security (RLS)
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.issues ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.post_views ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.likes ENABLE ROW LEVEL SECURITY;
@@ -131,6 +132,12 @@ CREATE POLICY "Users can update own profile" ON public.profiles FOR UPDATE USING
 -- Categories Policies
 CREATE POLICY "Categories viewable by everyone" ON public.categories FOR SELECT USING (true);
 CREATE POLICY "Only admins/editors can modify categories" ON public.categories FOR ALL USING (
+  EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'editor'))
+);
+
+-- Issues Policies (Magazine Editions)
+CREATE POLICY "Published issues viewable by everyone" ON public.issues FOR SELECT USING (true);
+CREATE POLICY "Staff can manage issues" ON public.issues FOR ALL USING (
   EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role IN ('admin', 'editor'))
 );
 
