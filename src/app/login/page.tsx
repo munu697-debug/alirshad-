@@ -40,8 +40,10 @@ export default function LoginPage() {
         // Dispatch auth-changed event so Navbar immediately updates
         if (typeof window !== "undefined") {
           window.dispatchEvent(new Event("auth-changed"));
+          window.location.href = data.redirect || "/";
+        } else {
+          router.replace(data.redirect || "/");
         }
-        router.replace(data.redirect || "/");
       } else {
         setErrorMsg(data.error || "Invalid email or password. Please try again.");
       }
