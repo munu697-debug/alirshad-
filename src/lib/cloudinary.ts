@@ -40,10 +40,6 @@ export async function uploadToCloudinary(
     const result = await cloudinary.uploader.upload(fileBufferOrBase64, {
       folder,
       resource_type: 'image',
-      transformation: [
-        { quality: 'auto:good' },
-        { fetch_format: 'auto' }
-      ]
     });
 
     return {

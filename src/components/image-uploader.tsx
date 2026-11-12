@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { uploadImage } from "@/lib/upload-client";
 import { Upload, X, Link as LinkIcon, Loader2 } from "lucide-react";
 
 interface ImageUploaderProps {
@@ -20,20 +21,7 @@ export function ImageUploader({ value, onChange, label = "Featured Image" }: Ima
 
     setLoading(true);
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
-      if (data.url) {
-        onChange(data.url);
-      } else {
-        alert("Upload failed. Please check Cloudinary configuration.");
-      }
+      onChange(await uploadImage(file));
     } catch (err) {
       alert("Error uploading image.");
     } finally {

@@ -1,6 +1,7 @@
 import { getAllComments } from "@/lib/db-service";
 import { formatDate } from "@/lib/utils";
 import { MessageSquare } from "lucide-react";
+import { CommentActions } from "./comment-actions";
 
 export const revalidate = 0;
 
@@ -39,6 +40,7 @@ export default async function DashboardCommentsPage() {
                   </div>
                   <p className="text-xs text-secondary font-malayalam leading-relaxed">{comm.content}</p>
                 </div>
+                <div className="flex items-center gap-2 shrink-0">
                 <span className={`px-2.5 py-1 rounded-full text-[10px] font-semibold whitespace-nowrap ${
                   comm.status === "approved"
                     ? "bg-green-50 text-green-700"
@@ -48,6 +50,8 @@ export default async function DashboardCommentsPage() {
                 }`}>
                   {comm.status}
                 </span>
+                <CommentActions id={comm.id} status={comm.status} />
+                </div>
               </div>
             ))}
           </div>

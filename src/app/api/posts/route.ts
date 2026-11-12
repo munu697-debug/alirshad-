@@ -39,7 +39,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Title and content are required" }, { status: 400 });
     }
 
-    const saved = await savePost({ ...body, content: sanitizeArticleHtml(body.content) });
+    const slug = String(body.slug || "").trim() || `post-${Date.now()}`;
+    const saved = await savePost({ ...body, slug, content: sanitizeArticleHtml(body.content) });
     return NextResponse.json({ success: true, post: saved }, { status: 201 });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });

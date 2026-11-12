@@ -1,6 +1,7 @@
 "use client";
 
 import { useEditor, EditorContent } from "@tiptap/react";
+import { uploadImage } from "@/lib/upload-client";
 import StarterKit from "@tiptap/starter-kit";
 import ImageExtension from "@tiptap/extension-image";
 import LinkExtension from "@tiptap/extension-link";
@@ -110,19 +111,9 @@ export function TiptapEditor({
 
     setUploading(true);
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
-      if (data.url) {
-        editor.chain().focus().setImage({ src: data.url }).run();
-        setImageModalOpen(false);
-      }
+      const url = await uploadImage(file);
+      editor.chain().focus().setImage({ src: url }).run();
+      setImageModalOpen(false);
     } catch (err) {
       alert("Failed to upload image.");
     } finally {

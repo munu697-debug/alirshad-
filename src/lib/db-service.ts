@@ -20,12 +20,23 @@ function isSupabaseConfigured(): boolean {
  * and archived posts are visible in the dashboard.
  */
 async function isVerifiedAdmin(): Promise<boolean> {
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) return false;
   try {
     const store = await cookies();
     return (await verifyAdminToken(store.get(ADMIN_COOKIE)?.value)) !== null;
   } catch {
     return false;
   }
+}
+
+function withCategory(row: any): Post {
+  if (!row) return row;
+  const cat = row.categories;
+  return {
+    ...row,
+    category_name: row.category_name || cat?.name,
+    category_slug: row.category_slug || cat?.slug,
+  } as Post;
 }
 
 export async function getPosts(options?: {
@@ -85,7 +96,7 @@ export async function getPosts(options?: {
       console.warn('getPosts fallback:', error.message);
       return [];
     }
-    return (data as Post[]) ?? [];
+    return ((data as any[]) ?? []).map(withCategory);
   } catch (err: any) {
     if (err?.digest === 'DYNAMIC_SERVER_USAGE') throw err;
     console.error('getPosts exception:', err);
@@ -104,7 +115,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
       .eq('slug', decodeURIComponent(slug))
       .single();
     if (error) return null;
-    return (data as Post) ?? null;
+    return withCategory(data);
   } catch (err: any) {
     if (err?.digest === 'DYNAMIC_SERVER_USAGE') throw err;
     return null;
@@ -122,7 +133,7 @@ export async function getPostById(id: string): Promise<Post | null> {
       .eq('id', id)
       .single();
     if (error) return null;
-    return (data as Post) ?? null;
+    return withCategory(data);
   } catch (err: any) {
     if (err?.digest === 'DYNAMIC_SERVER_USAGE') throw err;
     return null;
@@ -130,7 +141,7 @@ export async function getPostById(id: string): Promise<Post | null> {
 }
 
 export async function savePost(postData: Partial<Post>): Promise<Post | null> {
-  if (!isSupabaseConfigured()) return null;
+  if (!isSupabaseConfigured()) throw new Error('Supabase is not configured on the server.');
 
   try {
     const supabase = createAdminClient();
@@ -143,7 +154,7 @@ export async function savePost(postData: Partial<Post>): Promise<Post | null> {
         .eq('id', cleanData.id)
         .select()
         .single();
-      if (error) { console.error('savePost update error:', error.message); return null; }
+      if (error) { throw new Error('Could not update article: ' + error.message); }
       return data as Post;
     } else {
       const { data, error } = await supabase
@@ -156,12 +167,12 @@ export async function savePost(postData: Partial<Post>): Promise<Post | null> {
         })
         .select()
         .single();
-      if (error) { console.error('savePost insert error:', error.message); return null; }
+      if (error) { throw new Error('Could not save article: ' + error.message); }
       return data as Post;
     }
   } catch (err) {
     console.error('savePost exception:', err);
-    return null;
+    throw err;
   }
 }
 
@@ -250,7 +261,7 @@ export async function getIssueById(id: string): Promise<Issue | null> {
 }
 
 export async function saveIssue(issueData: Partial<Issue>): Promise<Issue | null> {
-  if (!isSupabaseConfigured()) return null;
+  if (!isSupabaseConfigured()) throw new Error('Supabase is not configured on the server.');
 
   try {
     const supabase = createAdminClient();
@@ -283,8 +294,7 @@ export async function saveIssue(issueData: Partial<Issue>): Promise<Issue | null
         .single();
 
       if (error) {
-        console.error('saveIssue update error:', error.message);
-        return null;
+        throw new Error('Could not update issue: ' + error.message);
       }
       return data as Issue;
     } else {
@@ -305,14 +315,13 @@ export async function saveIssue(issueData: Partial<Issue>): Promise<Issue | null
         .single();
 
       if (error) {
-        console.error('saveIssue insert error:', error.message);
-        return null;
+        throw new Error('Could not create issue: ' + error.message);
       }
       return data as Issue;
     }
   } catch (err) {
     console.error('saveIssue exception:', err);
-    return null;
+    throw err;
   }
 }
 
@@ -483,5 +492,65 @@ export async function getAllSubscribers(): Promise<Subscriber[]> {
     return (data as Subscriber[]) ?? [];
   } catch {
     return [];
+  }
+}
+
+export async function saveCategory(data: Partial<Category>): Promise<Category | null> {
+  if (!isSupabaseConfigured()) throw new Error('Supabase is not configured on the server.');
+
+  try {
+    const supabase = createAdminClient();
+    const row = {
+      name: data.name,
+      slug: data.slug,
+      description: data.description || null,
+      display_order: data.display_order ?? 0,
+    };
+    const query = data.id
+      ? supabase.from('categories').update(row).eq('id', data.id)
+      : supabase.from('categories').insert(row);
+    const { data: saved, error } = await query.select().single();
+    if (error) throw new Error('Could not save category: ' + error.message);
+    return saved as Category;
+  } catch (err) {
+    console.error('saveCategory exception:', err);
+    throw err;
+  }
+}
+
+export async function deleteCategory(id: string): Promise<boolean> {
+  if (!isSupabaseConfigured()) return false;
+
+  try {
+    const supabase = createAdminClient();
+    const { error } = await supabase.from('categories').delete().eq('id', id);
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
+export async function updateCommentStatus(id: string, status: Comment['status']): Promise<boolean> {
+  if (!isSupabaseConfigured()) return false;
+  try {
+    const supabase = createAdminClient();
+    const { error } = await supabase
+      .from('comments')
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq('id', id);
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
+export async function deleteComment(id: string): Promise<boolean> {
+  if (!isSupabaseConfigured()) return false;
+  try {
+    const supabase = createAdminClient();
+    const { error } = await supabase.from('comments').delete().eq('id', id);
+    return !error;
+  } catch {
+    return false;
   }
 }

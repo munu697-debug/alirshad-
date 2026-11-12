@@ -2,6 +2,7 @@ import Link from "next/link";
 import { PlusCircle, Search, Edit2, ExternalLink } from "lucide-react";
 import { getPosts } from "@/lib/db-service";
 import { formatDate } from "@/lib/utils";
+import { DeletePostButton } from "./delete-post-button";
 
 export const revalidate = 0;
 
@@ -44,6 +45,13 @@ export default async function DashboardPostsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
+              {posts.length === 0 && (
+                <tr>
+                  <td colSpan={8} className="py-10 text-center text-muted">
+                    No articles found. If you just published one, check that SUPABASE_SERVICE_ROLE_KEY is set on the server.
+                  </td>
+                </tr>
+              )}
               {posts.map((post) => (
                 <tr key={post.id} className="hover:bg-gray-50/60 transition-colors">
                   <td className="py-4 pr-4">
@@ -99,6 +107,7 @@ export default async function DashboardPostsPage() {
                       >
                         <ExternalLink className="w-3.5 h-3.5" />
                       </Link>
+                      <DeletePostButton id={post.id} title={post.title} />
                     </div>
                   </td>
                 </tr>
