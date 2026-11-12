@@ -37,7 +37,11 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        router.replace(data.redirect || "/dashboard");
+        // Dispatch auth-changed event so Navbar immediately updates
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(new Event("auth-changed"));
+        }
+        router.replace(data.redirect || "/");
       } else {
         setErrorMsg(data.error || "Invalid email or password. Please try again.");
       }
@@ -145,11 +149,11 @@ export default function LoginPage() {
             {loading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Verifying...</span>
+                <span>Signing In...</span>
               </>
             ) : (
               <>
-                <span>Log In & Enter Dashboard</span>
+                <span>Sign In / പ്രവേശിക്കുക</span>
                 <ArrowRight className="w-4 h-4" />
               </>
             )}

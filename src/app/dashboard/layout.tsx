@@ -1,7 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   FileText,
   PlusCircle,
@@ -11,6 +12,8 @@ import {
   LayoutDashboard,
   ExternalLink,
   BookOpen,
+  LogOut,
+  Loader2,
 } from "lucide-react";
 
 export default function DashboardLayout({
@@ -19,6 +22,47 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [authorized, setAuthorized] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then((data) => {
+        if (!data.authenticated || data.role !== "admin") {
+          // Strictly protect dashboard: Only the admin can manage everything
+          router.replace("/");
+        } else {
+          setAuthorized(true);
+        }
+      })
+      .catch(() => {
+        router.replace("/");
+      });
+  }, [router]);
+
+  const handleAdminLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("auth-changed"));
+      }
+      router.replace("/");
+    } catch {
+      router.replace("/");
+    }
+  };
+
+  if (authorized === null) {
+    return (
+      <div className="min-h-screen bg-[#fcfcfd] flex items-center justify-center">
+        <div className="flex items-center gap-3 text-secondary text-xs font-semibold">
+          <Loader2 className="w-5 h-5 animate-spin text-accent" />
+          <span>Verifying Admin Permissions...</span>
+        </div>
+      </div>
+    );
+  }
 
   const navItems = [
     { href: "/dashboard", label: "Overview", icon: LayoutDashboard, exact: true },
@@ -79,8 +123,8 @@ export default function DashboardLayout({
           </nav>
         </div>
 
-        {/* Footer info without the active stack box */}
-        <div className="pt-6 border-t border-gray-100 mt-6">
+        {/* Footer info with Return to Site and Logout */}
+        <div className="pt-6 border-t border-gray-100 mt-6 space-y-1">
           <Link
             href="/"
             prefetch={true}
@@ -89,6 +133,14 @@ export default function DashboardLayout({
             <span>Return to Site</span>
             <ExternalLink className="w-3.5 h-3.5" />
           </Link>
+
+          <button
+            onClick={handleAdminLogout}
+            className="w-full flex items-center justify-between text-xs font-semibold text-red-600 hover:text-red-700 p-2 rounded-xl hover:bg-red-50 transition-colors"
+          >
+            <span>Admin Logout</span>
+            <LogOut className="w-3.5 h-3.5" />
+          </button>
         </div>
       </aside>
 
