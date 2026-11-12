@@ -6,13 +6,14 @@ import { ArrowLeft, Save, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { TiptapEditor } from "@/components/tiptap-editor";
 import { ImageUploader } from "@/components/image-uploader";
-import type { Category } from "@/lib/types";
+import type { Category, Issue } from "@/lib/types";
 import { calculateReadingTime, generateSlug } from "@/lib/utils";
 
 export default function NewPostPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [issues, setIssues] = useState<Issue[]>([]);
 
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
@@ -21,6 +22,8 @@ export default function NewPostPage() {
   const [featuredImage, setFeaturedImage] = useState("");
   const [authorName, setAuthorName] = useState("Editorial Team");
   const [categoryId, setCategoryId] = useState("");
+  const [issueId, setIssueId] = useState("");
+  const [isCoverStory, setIsCoverStory] = useState(false);
   const [tags, setTags] = useState("");
   const [status, setStatus] = useState<"published" | "draft">("published");
   const [isFeatured, setIsFeatured] = useState(false);
@@ -32,6 +35,15 @@ export default function NewPostPage() {
         if (d.categories && d.categories.length > 0) {
           setCategories(d.categories);
           setCategoryId(d.categories[0].id);
+        }
+      })
+      .catch(() => {});
+
+    fetch("/api/issues")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.issues && d.issues.length > 0) {
+          setIssues(d.issues);
         }
       })
       .catch(() => {});
@@ -53,6 +65,7 @@ export default function NewPostPage() {
 
     setLoading(true);
     const categoryObj = categories.find((c) => c.id === categoryId);
+    const selectedIssue = issues.find((i) => i.id === issueId);
 
     const postPayload = {
       title: title.trim(),
@@ -61,9 +74,12 @@ export default function NewPostPage() {
       content: content.trim(),
       featured_image: featuredImage || "https://images.unsplash.com/photo-1544717305-2782549b5136?w=1200&q=80",
       author_name: authorName.trim(),
-      category_id: categoryId,
+      category_id: categoryId || null,
       category_name: categoryObj?.name || "Feature",
       category_slug: categoryObj?.slug || "feature",
+      issue_id: issueId || null,
+      issue_title: selectedIssue?.title || null,
+      is_cover_story: issueId ? isCoverStory : false,
       tags: tags.split(",").map((t) => t.trim()).filter(Boolean),
       status,
       is_featured: isFeatured,
@@ -177,6 +193,37 @@ export default function NewPostPage() {
             {/* Featured Image with Cloudinary */}
             <ImageUploader value={featuredImage} onChange={setFeaturedImage} />
 
+            {/* Magazine Issue selection (Image 5) */}
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-semibold text-primary">
+                  Magazine Issue (പതിപ്പ്)
+                </label>
+                <Link
+                  href="/dashboard/issues"
+                  target="_blank"
+                  className="text-[10px] text-accent hover:underline"
+                >
+                  Manage Issues
+                </Link>
+              </div>
+              <select
+                value={issueId}
+                onChange={(e) => {
+                  setIssueId(e.target.value);
+                  if (!e.target.value) setIsCoverStory(false);
+                }}
+                className="w-full px-3 py-2 text-xs bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-accent"
+              >
+                <option value="">None (Independent Web Article)</option>
+                {issues.map((i) => (
+                  <option key={i.id} value={i.id}>
+                    {i.title} {i.edition_label ? `(${i.edition_label})` : ""}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             {/* Category selection */}
             <div>
               <label className="block text-xs font-semibold text-primary mb-1.5">Category</label>
@@ -218,18 +265,35 @@ export default function NewPostPage() {
               />
             </div>
 
-            {/* Featured in Hero Carousel toggle */}
-            <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
-              <input
-                type="checkbox"
-                id="isFeatured"
-                checked={isFeatured}
-                onChange={(e) => setIsFeatured(e.target.checked)}
-                className="rounded border-gray-300 text-accent focus:ring-accent"
-              />
-              <label htmlFor="isFeatured" className="text-xs text-primary font-medium cursor-pointer">
-                Feature in Homepage Carousel
-              </label>
+            {/* Featured in Hero Carousel toggle & Cover Story toggle */}
+            <div className="space-y-2 pt-2 border-t border-gray-100">
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="isFeatured"
+                  checked={isFeatured}
+                  onChange={(e) => setIsFeatured(e.target.checked)}
+                  className="rounded border-gray-300 text-accent focus:ring-accent"
+                />
+                <label htmlFor="isFeatured" className="text-xs text-primary font-medium cursor-pointer">
+                  Feature in Homepage Carousel
+                </label>
+              </div>
+
+              {issueId && (
+                <div className="flex items-center gap-2 p-2 bg-accent/5 rounded-xl border border-accent/20">
+                  <input
+                    type="checkbox"
+                    id="isCoverStory"
+                    checked={isCoverStory}
+                    onChange={(e) => setIsCoverStory(e.target.checked)}
+                    className="rounded border-gray-300 text-accent focus:ring-accent"
+                  />
+                  <label htmlFor="isCoverStory" className="text-xs text-primary font-semibold cursor-pointer">
+                    Main Cover Story (മുഖചിത്ര ലേഖനം)
+                  </label>
+                </div>
+              )}
             </div>
           </div>
         </div>

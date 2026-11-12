@@ -105,10 +105,15 @@ export function ArticleCard({ post, variant = "standard" }: ArticleCardProps) {
           loading="lazy"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
-        <div className="absolute top-3 left-3">
+        <div className="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap">
           <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-white/95 backdrop-blur-sm text-accent rounded-lg shadow-sm">
             {post.category_name || "Article"}
           </span>
+          {post.is_cover_story && (
+            <span className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-accent text-white rounded-lg shadow-royal">
+              മുഖചിത്രം
+            </span>
+          )}
         </div>
       </Link>
 

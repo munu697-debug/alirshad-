@@ -1,6 +1,6 @@
 import { createClient } from './supabase/server';
 import { createAdminClient } from './supabase/admin';
-import { Post, Category, Comment, Subscriber } from './types';
+import { Post, Category, Comment, Subscriber, Issue } from './types';
 
 function isSupabaseConfigured(): boolean {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -15,23 +15,39 @@ function isSupabaseConfigured(): boolean {
 export async function getPosts(options?: {
   categorySlug?: string;
   authorName?: string;
+  issueId?: string;
+  issueSlug?: string;
+  coverStoryOnly?: boolean;
   limit?: number;
   featuredOnly?: boolean;
   status?: 'published' | 'draft' | 'archived' | 'all';
 }): Promise<Post[]> {
   if (!isSupabaseConfigured()) return [];
 
-  const { categorySlug, authorName, limit, featuredOnly, status = 'published' } = options || {};
+  const { categorySlug, authorName, issueId, issueSlug, coverStoryOnly, limit, featuredOnly, status = 'published' } = options || {};
 
   try {
     const supabase = await createClient();
     let query = supabase
       .from('posts')
-      .select('*, categories(id, name, slug)');
+      .select('*, categories(id, name, slug), issues(id, title, slug, cover_image)');
 
     if (status !== 'all') query = query.eq('status', status);
     if (featuredOnly) query = query.eq('is_featured', true);
+    if (coverStoryOnly) query = query.eq('is_cover_story', true);
     if (authorName) query = query.ilike('author_name', `%${decodeURIComponent(authorName)}%`);
+
+    if (issueId) {
+      query = query.eq('issue_id', issueId);
+    } else if (issueSlug) {
+      const { data: issue } = await supabase
+        .from('issues')
+        .select('id')
+        .eq('slug', decodeURIComponent(issueSlug))
+        .single();
+      if (issue) query = query.eq('issue_id', issue.id);
+      else return [];
+    }
 
     if (categorySlug) {
       const { data: cat } = await supabase
@@ -66,7 +82,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
     const supabase = await createClient();
     const { data, error } = await supabase
       .from('posts')
-      .select('*, categories(id, name, slug)')
+      .select('*, categories(id, name, slug), issues(id, title, slug, cover_image)')
       .eq('slug', decodeURIComponent(slug))
       .single();
     if (error) return null;
@@ -84,7 +100,7 @@ export async function getPostById(id: string): Promise<Post | null> {
     const supabase = await createClient();
     const { data, error } = await supabase
       .from('posts')
-      .select('*, categories(id, name, slug)')
+      .select('*, categories(id, name, slug), issues(id, title, slug, cover_image)')
       .eq('id', id)
       .single();
     if (error) return null;
@@ -100,11 +116,13 @@ export async function savePost(postData: Partial<Post>): Promise<Post | null> {
 
   try {
     const supabase = createAdminClient();
-    if (postData.id) {
+    const { categories, issues, author, category, category_name, category_slug, issue_title, ...cleanData } = postData as any;
+
+    if (cleanData.id) {
       const { data, error } = await supabase
         .from('posts')
-        .update({ ...postData, updated_at: new Date().toISOString() })
-        .eq('id', postData.id)
+        .update({ ...cleanData, updated_at: new Date().toISOString() })
+        .eq('id', cleanData.id)
         .select()
         .single();
       if (error) { console.error('savePost update error:', error.message); return null; }
@@ -113,10 +131,10 @@ export async function savePost(postData: Partial<Post>): Promise<Post | null> {
       const { data, error } = await supabase
         .from('posts')
         .insert({
-          ...postData,
+          ...cleanData,
           views_count: 0,
           likes_count: 0,
-          published_at: postData.published_at || new Date().toISOString(),
+          published_at: cleanData.published_at || new Date().toISOString(),
         })
         .select()
         .single();
@@ -135,6 +153,162 @@ export async function deletePost(id: string): Promise<boolean> {
   try {
     const supabase = createAdminClient();
     const { error } = await supabase.from('posts').delete().eq('id', id);
+    return !error;
+  } catch {
+    return false;
+  }
+}
+
+export async function getIssues(options?: { publishedOnly?: boolean }): Promise<Issue[]> {
+  if (!isSupabaseConfigured()) return [];
+
+  const { publishedOnly = false } = options || {};
+
+  try {
+    const supabase = await createClient();
+    let query = supabase.from('issues').select('*, posts(count)');
+
+    if (publishedOnly) {
+      query = query.eq('is_published', true);
+    }
+
+    query = query
+      .order('is_latest', { ascending: false })
+      .order('display_order', { ascending: true })
+      .order('published_date', { ascending: false });
+
+    const { data, error } = await query;
+    if (error) {
+      console.error('getIssues error:', error.message);
+      return [];
+    }
+
+    return (data || []).map((item: any) => ({
+      ...item,
+      articles_count: item.posts?.[0]?.count ?? 0,
+    })) as Issue[];
+  } catch (err: any) {
+    if (err?.digest === 'DYNAMIC_SERVER_USAGE') throw err;
+    console.error('getIssues exception:', err);
+    return [];
+  }
+}
+
+export async function getIssueBySlug(slug: string): Promise<Issue | null> {
+  if (!isSupabaseConfigured()) return null;
+
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from('issues')
+      .select('*, posts(count)')
+      .eq('slug', decodeURIComponent(slug))
+      .single();
+
+    if (error || !data) return null;
+
+    return {
+      ...data,
+      articles_count: data.posts?.[0]?.count ?? 0,
+    } as Issue;
+  } catch (err: any) {
+    if (err?.digest === 'DYNAMIC_SERVER_USAGE') throw err;
+    return null;
+  }
+}
+
+export async function getIssueById(id: string): Promise<Issue | null> {
+  if (!isSupabaseConfigured()) return null;
+
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from('issues')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error || !data) return null;
+    return data as Issue;
+  } catch (err: any) {
+    if (err?.digest === 'DYNAMIC_SERVER_USAGE') throw err;
+    return null;
+  }
+}
+
+export async function saveIssue(issueData: Partial<Issue>): Promise<Issue | null> {
+  if (!isSupabaseConfigured()) return null;
+
+  try {
+    const supabase = createAdminClient();
+
+    // If marked as latest, unmark other issues
+    if (issueData.is_latest) {
+      await supabase
+        .from('issues')
+        .update({ is_latest: false })
+        .neq('id', issueData.id || '00000000-0000-0000-0000-000000000000');
+    }
+
+    if (issueData.id) {
+      const { data, error } = await supabase
+        .from('issues')
+        .update({
+          title: issueData.title,
+          slug: issueData.slug,
+          cover_image: issueData.cover_image,
+          edition_label: issueData.edition_label,
+          description: issueData.description,
+          published_date: issueData.published_date,
+          is_published: issueData.is_published ?? true,
+          is_latest: issueData.is_latest ?? false,
+          display_order: issueData.display_order ?? 0,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', issueData.id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('saveIssue update error:', error.message);
+        return null;
+      }
+      return data as Issue;
+    } else {
+      const { data, error } = await supabase
+        .from('issues')
+        .insert({
+          title: issueData.title,
+          slug: issueData.slug,
+          cover_image: issueData.cover_image,
+          edition_label: issueData.edition_label || 'PACKET EDITION',
+          description: issueData.description || null,
+          published_date: issueData.published_date || new Date().toISOString().split('T')[0],
+          is_published: issueData.is_published ?? true,
+          is_latest: issueData.is_latest ?? false,
+          display_order: issueData.display_order ?? 0,
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('saveIssue insert error:', error.message);
+        return null;
+      }
+      return data as Issue;
+    }
+  } catch (err) {
+    console.error('saveIssue exception:', err);
+    return null;
+  }
+}
+
+export async function deleteIssue(id: string): Promise<boolean> {
+  if (!isSupabaseConfigured()) return false;
+
+  try {
+    const supabase = createAdminClient();
+    const { error } = await supabase.from('issues').delete().eq('id', id);
     return !error;
   } catch {
     return false;

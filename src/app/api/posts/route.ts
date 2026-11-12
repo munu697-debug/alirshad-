@@ -6,12 +6,18 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const category = searchParams.get("category") || undefined;
     const author = searchParams.get("author") || undefined;
+    const issueId = searchParams.get("issueId") || undefined;
+    const issueSlug = searchParams.get("issueSlug") || undefined;
+    const coverStoryOnly = searchParams.get("coverStoryOnly") === "true";
     const status = (searchParams.get("status") as any) || "published";
     const limit = searchParams.get("limit") ? parseInt(searchParams.get("limit")!) : undefined;
 
     const posts = await getPosts({
       categorySlug: category,
       authorName: author,
+      issueId,
+      issueSlug,
+      coverStoryOnly,
       status,
       limit,
     });

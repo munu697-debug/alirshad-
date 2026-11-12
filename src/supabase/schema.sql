@@ -24,7 +24,23 @@ CREATE TABLE IF NOT EXISTS public.categories (
   created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 3. Posts Table
+-- 3. Issues Table (Magazine Editions & Cover Pages)
+CREATE TABLE IF NOT EXISTS public.issues (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  title TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  cover_image TEXT NOT NULL,
+  edition_label TEXT DEFAULT 'Pocket Edition',
+  description TEXT,
+  published_date TEXT,
+  is_published BOOLEAN DEFAULT true,
+  is_latest BOOLEAN DEFAULT false,
+  display_order INT DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- 4. Posts Table
 CREATE TABLE IF NOT EXISTS public.posts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
@@ -35,6 +51,8 @@ CREATE TABLE IF NOT EXISTS public.posts (
   author_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   author_name TEXT NOT NULL, -- Fallback / display name
   category_id UUID REFERENCES public.categories(id) ON DELETE SET NULL,
+  issue_id UUID REFERENCES public.issues(id) ON DELETE SET NULL,
+  is_cover_story BOOLEAN DEFAULT false,
   tags TEXT[] DEFAULT '{}',
   status TEXT NOT NULL DEFAULT 'published' CHECK (status IN ('draft', 'published', 'archived')),
   is_featured BOOLEAN DEFAULT false,

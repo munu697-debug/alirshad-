@@ -124,6 +124,15 @@ export function Navbar() {
                 Home
               </Link>
 
+              <Link
+                href="/issues"
+                className={`px-3 py-1.5 rounded-lg whitespace-nowrap transition-colors ${
+                  pathname.startsWith("/issue") ? "text-accent bg-accent-light font-bold" : "hover:text-accent hover:bg-accent-light/40"
+                }`}
+              >
+                Issues / പതിപ്പുകൾ
+              </Link>
+
               {categories.map((cat) => (
                 <Link
                   key={cat.id}
@@ -184,6 +193,12 @@ export function Navbar() {
               className="block px-3 py-2 text-sm font-semibold rounded-lg text-primary hover:bg-gray-50"
             >
               Home
+            </Link>
+            <Link
+              href="/issues"
+              className="block px-3 py-2 text-sm font-semibold rounded-lg text-primary hover:bg-gray-50"
+            >
+              Magazine Issues (പതിപ്പുകൾ)
             </Link>
             <Link
               href="/archive"

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Save, Trash2, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { Post, Category } from "@/lib/types";
+import { Post, Category, Issue } from "@/lib/types";
 import { TiptapEditor } from "@/components/tiptap-editor";
 import { ImageUploader } from "@/components/image-uploader";
 import { calculateReadingTime } from "@/lib/utils";
@@ -18,6 +18,7 @@ export default function EditPostClient({ initialPost }: EditPostClientProps) {
   const [loading, setLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [issues, setIssues] = useState<Issue[]>([]);
 
   const [title, setTitle] = useState(initialPost.title);
   const [slug, setSlug] = useState(initialPost.slug);
@@ -26,6 +27,8 @@ export default function EditPostClient({ initialPost }: EditPostClientProps) {
   const [featuredImage, setFeaturedImage] = useState(initialPost.featured_image);
   const [authorName, setAuthorName] = useState(initialPost.author_name);
   const [categoryId, setCategoryId] = useState(initialPost.category_id || "");
+  const [issueId, setIssueId] = useState(initialPost.issue_id || "");
+  const [isCoverStory, setIsCoverStory] = useState(Boolean(initialPost.is_cover_story));
   const [tags, setTags] = useState(initialPost.tags?.join(", ") || "");
   const [status, setStatus] = useState<"published" | "draft" | "archived">(initialPost.status);
   const [isFeatured, setIsFeatured] = useState(initialPost.is_featured);
@@ -34,6 +37,11 @@ export default function EditPostClient({ initialPost }: EditPostClientProps) {
     fetch("/api/categories")
       .then((r) => r.json())
       .then((d) => { if (d.categories) setCategories(d.categories); })
+      .catch(() => {});
+
+    fetch("/api/issues")
+      .then((r) => r.json())
+      .then((d) => { if (d.issues) setIssues(d.issues); })
       .catch(() => {});
   }, []);
 
@@ -46,6 +54,7 @@ export default function EditPostClient({ initialPost }: EditPostClientProps) {
 
     setLoading(true);
     const categoryObj = categories.find((c) => c.id === categoryId);
+    const selectedIssue = issues.find((i) => i.id === issueId);
 
     const postPayload = {
       ...initialPost,
@@ -55,9 +64,12 @@ export default function EditPostClient({ initialPost }: EditPostClientProps) {
       content: content.trim(),
       featured_image: featuredImage,
       author_name: authorName.trim(),
-      category_id: categoryId,
+      category_id: categoryId || null,
       category_name: categoryObj?.name || initialPost.category_name,
       category_slug: categoryObj?.slug || initialPost.category_slug,
+      issue_id: issueId || null,
+      issue_title: selectedIssue?.title || null,
+      is_cover_story: issueId ? isCoverStory : false,
       tags: tags.split(",").map((t) => t.trim()).filter(Boolean),
       status,
       is_featured: isFeatured,
@@ -184,6 +196,37 @@ export default function EditPostClient({ initialPost }: EditPostClientProps) {
           <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-xs space-y-5">
             <ImageUploader value={featuredImage} onChange={setFeaturedImage} />
 
+            {/* Magazine Issue selection (Image 5) */}
+            <div>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-semibold text-primary">
+                  Magazine Issue (പതിപ്പ്)
+                </label>
+                <Link
+                  href="/dashboard/issues"
+                  target="_blank"
+                  className="text-[10px] text-accent hover:underline"
+                >
+                  Manage Issues
+                </Link>
+              </div>
+              <select
+                value={issueId}
+                onChange={(e) => {
+                  setIssueId(e.target.value);
+                  if (!e.target.value) setIsCoverStory(false);
+                }}
+                className="w-full px-3 py-2 text-xs bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-accent"
+              >
+                <option value="">None (Independent Web Article)</option>
+                {issues.map((i) => (
+                  <option key={i.id} value={i.id}>
+                    {i.title} {i.edition_label ? `(${i.edition_label})` : ""}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div>
               <label className="block text-xs font-semibold text-primary mb-1.5">Category</label>
               <select
@@ -233,17 +276,34 @@ export default function EditPostClient({ initialPost }: EditPostClientProps) {
               </select>
             </div>
 
-            <div className="flex items-center gap-2 pt-2 border-t border-gray-100">
-              <input
-                type="checkbox"
-                id="isFeatured"
-                checked={isFeatured}
-                onChange={(e) => setIsFeatured(e.target.checked)}
-                className="rounded border-gray-300 text-accent focus:ring-accent"
-              />
-              <label htmlFor="isFeatured" className="text-xs text-primary font-medium cursor-pointer">
-                Feature in Homepage Carousel
-              </label>
+            <div className="space-y-2 pt-2 border-t border-gray-100">
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="isFeatured"
+                  checked={isFeatured}
+                  onChange={(e) => setIsFeatured(e.target.checked)}
+                  className="rounded border-gray-300 text-accent focus:ring-accent"
+                />
+                <label htmlFor="isFeatured" className="text-xs text-primary font-medium cursor-pointer">
+                  Feature in Homepage Carousel
+                </label>
+              </div>
+
+              {issueId && (
+                <div className="flex items-center gap-2 p-2 bg-accent/5 rounded-xl border border-accent/20">
+                  <input
+                    type="checkbox"
+                    id="isCoverStory"
+                    checked={isCoverStory}
+                    onChange={(e) => setIsCoverStory(e.target.checked)}
+                    className="rounded border-gray-300 text-accent focus:ring-accent"
+                  />
+                  <label htmlFor="isCoverStory" className="text-xs text-primary font-semibold cursor-pointer">
+                    Main Cover Story (മുഖചിത്ര ലേഖനം)
+                  </label>
+                </div>
+              )}
             </div>
           </div>
         </div>

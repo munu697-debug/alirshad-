@@ -10,6 +10,7 @@ import {
   Users,
   LayoutDashboard,
   ExternalLink,
+  BookOpen,
 } from "lucide-react";
 
 export default function DashboardLayout({
@@ -23,6 +24,7 @@ export default function DashboardLayout({
     { href: "/dashboard", label: "Overview", icon: LayoutDashboard, exact: true },
     { href: "/dashboard/posts", label: "All Articles", icon: FileText, exact: true },
     { href: "/dashboard/posts/new", label: "Write with Tiptap", icon: PlusCircle },
+    { href: "/dashboard/issues", label: "Issues", icon: BookOpen },
     { href: "/dashboard/categories", label: "Categories", icon: FolderTree },
     { href: "/dashboard/comments", label: "Responses", icon: MessageSquare },
     { href: "/dashboard/subscribers", label: "Subscribers", icon: Users },

@@ -20,6 +20,22 @@ export interface Category {
   count?: number;
 }
 
+export interface Issue {
+  id: string;
+  title: string;
+  slug: string;
+  cover_image: string;
+  edition_label?: string;
+  description?: string;
+  published_date?: string;
+  is_published: boolean;
+  is_latest?: boolean;
+  display_order?: number;
+  created_at?: string;
+  updated_at?: string;
+  articles_count?: number;
+}
+
 export interface Post {
   id: string;
   title: string;
@@ -34,6 +50,9 @@ export interface Post {
   category_name?: string;
   category_slug?: string;
   category?: Category;
+  issue_id?: string;
+  issue_title?: string;
+  is_cover_story?: boolean;
   tags: string[];
   status: 'draft' | 'published' | 'archived';
   is_featured: boolean;
