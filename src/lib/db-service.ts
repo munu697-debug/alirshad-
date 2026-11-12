@@ -1,5 +1,7 @@
 import { createClient } from './supabase/server';
 import { createAdminClient } from './supabase/admin';
+import { cookies } from 'next/headers';
+import { ADMIN_COOKIE, verifyAdminToken } from './auth';
 import { Post, Category, Comment, Subscriber, Issue } from './types';
 
 function isSupabaseConfigured(): boolean {
@@ -10,6 +12,20 @@ function isSupabaseConfigured(): boolean {
     !url.includes('your-project') &&
     !url.includes('demo.supabase')
   );
+}
+
+/**
+ * The admin logs in with a signed cookie, not a Supabase session, so RLS treats them as a
+ * visitor. For verified admin requests only, read with the service-role client so drafts
+ * and archived posts are visible in the dashboard.
+ */
+async function isVerifiedAdmin(): Promise<boolean> {
+  try {
+    const store = await cookies();
+    return (await verifyAdminToken(store.get(ADMIN_COOKIE)?.value)) !== null;
+  } catch {
+    return false;
+  }
 }
 
 export async function getPosts(options?: {
@@ -27,7 +43,9 @@ export async function getPosts(options?: {
   const { categorySlug, authorName, issueId, issueSlug, coverStoryOnly, limit, featuredOnly, status = 'published' } = options || {};
 
   try {
-    const supabase = await createClient();
+    const supabase = status !== 'published' && (await isVerifiedAdmin())
+      ? createAdminClient()
+      : await createClient();
     let query = supabase
       .from('posts')
       .select('*, categories(id, name, slug)');
@@ -97,7 +115,7 @@ export async function getPostById(id: string): Promise<Post | null> {
   if (!isSupabaseConfigured()) return null;
 
   try {
-    const supabase = await createClient();
+    const supabase = (await isVerifiedAdmin()) ? createAdminClient() : await createClient();
     const { data, error } = await supabase
       .from('posts')
       .select('*, categories(id, name, slug)')

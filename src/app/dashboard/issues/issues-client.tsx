@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { 
   Plus, 
@@ -304,8 +305,8 @@ export function IssuesClient({ initialIssues }: IssuesClientProps) {
       )}
 
       {/* Modal Dialog */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fade-in">
+      {isModalOpen && typeof document !== "undefined" && createPortal(
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fade-in">
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-gray-100 relative max-h-[90vh] overflow-y-auto">
             <button
               onClick={() => setIsModalOpen(false)}
@@ -453,7 +454,7 @@ export function IssuesClient({ initialIssues }: IssuesClientProps) {
             </form>
           </div>
         </div>
-      )}
+      , document.body)}
     </div>
   );
 }
