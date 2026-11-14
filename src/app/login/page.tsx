@@ -67,15 +67,9 @@ export default function LoginPage() {
               />
             </div>
           </Link>
-          <span className="text-xs font-bold uppercase tracking-widest text-accent mb-2 inline-block">
-            Editorial & Member Access
-          </span>
           <h1 className="text-2xl sm:text-3xl font-serif font-bold text-primary">
             Log In to Al Irshad
           </h1>
-          <p className="text-xs text-secondary mt-1">
-            Access the editorial CMS dashboard or member profile
-          </p>
         </div>
 
         {errorMsg && (

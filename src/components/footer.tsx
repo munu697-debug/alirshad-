@@ -50,9 +50,9 @@ export function Footer() {
         {/* Footer Brand Logo */}
         <div className="mb-10 pb-8 border-b border-gray-800/80">
           <Link href="/" className="inline-block">
-            <div className="h-11 w-64 brightness-0 invert opacity-90 hover:opacity-100 transition-opacity flex items-center">
+            <div className="h-11 w-64 opacity-90 hover:opacity-100 transition-opacity flex items-center">
               <img
-                src="/images/logo.webp"
+                src="/images/white-logo.webp"
                 alt="Al Irshad"
                 className="h-full w-full object-contain object-left"
               />
