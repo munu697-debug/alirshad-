@@ -9,7 +9,13 @@ export const metadata: Metadata = {
   title: "Home | Al Irshad",
   description: "Al Irshad - Malayalam articles, literature, stories, and thought-provoking blog posts.",
   icons: {
-    icon: "/favicon.webp",
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon.webp", type: "image/webp" },
+      { url: "/icon.png", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/icon.png",
   },
 };
 
@@ -21,7 +27,9 @@ export default function RootLayout({
   return (
     <html lang="ml">
       <head>
-        <link rel="icon" href="/favicon.webp" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon.webp" type="image/webp" />
+        <link rel="apple-touch-icon" href="/icon.png" />
         <link
           rel="preload"
           href="/Manjari/Manjari-Regular.ttf"
