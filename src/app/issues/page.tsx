@@ -23,7 +23,7 @@ export default async function IssuesPage() {
             {/* 3D Magazine Cover Presentation */}
             <div className="md:col-span-4 flex justify-center">
               <Link href={`/issue/${latestIssue.slug}`} className="group block relative">
-                <div className="relative w-48 sm:w-56 aspect-[3/4] rounded-xl overflow-hidden shadow-2xl transition-all duration-300 group-hover:scale-105 group-hover:shadow-[0_20px_40px_rgba(0,86,255,0.25)] ring-1 ring-black/10">
+                <div className="relative w-48 sm:w-56 aspect-[3/4] rounded-xl overflow-hidden shadow-2xl transition-all duration-300 group-hover:scale-105 group-hover:shadow-[0_20px_40px_rgba(230,39,39,0.25)] ring-1 ring-black/10">
                   <img
                     src={latestIssue.cover_image}
                     alt={latestIssue.title}

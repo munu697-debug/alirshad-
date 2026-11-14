@@ -56,7 +56,7 @@ export default async function DashboardOverview() {
         <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-xs">
           <div className="flex items-center justify-between text-muted mb-2">
             <span className="text-xs font-semibold uppercase tracking-wider">Total Views</span>
-            <Eye className="w-4 h-4 text-blue-500" />
+            <Eye className="w-4 h-4 text-accent" />
           </div>
           <div className="text-2xl font-bold text-primary">{totalViews.toLocaleString()}</div>
           <span className="text-[11px] text-muted">Across all articles</span>

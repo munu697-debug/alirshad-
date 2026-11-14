@@ -13,7 +13,11 @@ export function sanitizeArticleHtml(html: string): string {
       "*": ["style", "class"],
     },
     allowedStyles: {
-      "*": { "text-align": [/^(left|right|center|justify)$/] },
+      "*": {
+        "text-align": [/^(left|right|center|justify)$/],
+        "font-size": [/.+/],
+        "text-indent": [/.+/],
+      },
     },
     allowedSchemes: ["http", "https", "mailto"],
     allowedSchemesByTag: { img: ["http", "https"] },

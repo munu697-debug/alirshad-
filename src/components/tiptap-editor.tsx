@@ -1,6 +1,6 @@
 "use client";
 
-import { useEditor, EditorContent } from "@tiptap/react";
+import { useEditor, EditorContent, Mark, Extension, mergeAttributes } from "@tiptap/react";
 import { uploadImage } from "@/lib/upload-client";
 import StarterKit from "@tiptap/starter-kit";
 import ImageExtension from "@tiptap/extension-image";
@@ -29,6 +29,47 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 
+// Custom FontSize Mark extension for Tiptap
+const FontSize = Mark.create({
+  name: "fontSize",
+  addAttributes() {
+    return {
+      size: {
+        default: null,
+        parseHTML: (element) => element.style.fontSize || null,
+        renderHTML: (attributes) => {
+          if (!attributes.size) return {};
+          return {
+            style: `font-size: ${attributes.size}`,
+          };
+        },
+      },
+    };
+  },
+  parseHTML() {
+    return [
+      {
+        tag: "span[style*='font-size']",
+      },
+    ];
+  },
+  renderHTML({ HTMLAttributes }) {
+    return ["span", mergeAttributes(HTMLAttributes), 0];
+  },
+});
+
+// Custom TabIndentation Extension: inserts a 4-space tab space on Tab key
+const TabIndentation = Extension.create({
+  name: "tabIndentation",
+  addKeyboardShortcuts() {
+    return {
+      Tab: () => {
+        return this.editor.commands.insertContent("\u00A0\u00A0\u00A0\u00A0");
+      },
+    };
+  },
+});
+
 interface TiptapEditorProps {
   content: string;
   onChange: (html: string) => void;
@@ -43,6 +84,7 @@ export function TiptapEditor({
   const [imageModalOpen, setImageModalOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [selectedFontSize, setSelectedFontSize] = useState<string>("default");
 
   const editor = useEditor({
     extensions: [
@@ -63,10 +105,13 @@ export function TiptapEditor({
       }),
       TextAlign.configure({
         types: ["heading", "paragraph"],
+        defaultAlignment: "justify",
       }),
       Placeholder.configure({
         placeholder,
       }),
+      FontSize,
+      TabIndentation,
     ],
     content,
     immediatelyRender: false,
@@ -75,6 +120,14 @@ export function TiptapEditor({
         class:
           "prose prose-lg max-w-none focus:outline-none min-h-[350px] p-4 text-primary font-malayalam leading-relaxed",
       },
+    },
+    onSelectionUpdate: ({ editor }) => {
+      const size = (editor.getAttributes("fontSize")?.size as string) || "default";
+      setSelectedFontSize(size);
+    },
+    onTransaction: ({ editor }) => {
+      const size = (editor.getAttributes("fontSize")?.size as string) || "default";
+      setSelectedFontSize(size);
     },
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
@@ -184,6 +237,36 @@ export function TiptapEditor({
         >
           <Heading3 className="w-4 h-4" />
         </button>
+
+        <div className="h-4 w-px bg-gray-300 mx-1" />
+
+        {/* Font Size Selector */}
+        <div className="flex items-center gap-1">
+          <select
+            value={selectedFontSize}
+            onChange={(e) => {
+              const val = e.target.value;
+              setSelectedFontSize(val);
+              if (!val || val === "default") {
+                editor.chain().focus().unsetMark("fontSize").run();
+              } else {
+                editor.chain().focus().setMark("fontSize", { size: val }).run();
+              }
+            }}
+            className="text-xs font-semibold bg-white border border-gray-200 rounded-lg px-2 py-1 text-primary focus:outline-none focus:border-accent hover:border-gray-300 transition-colors cursor-pointer shadow-2xs"
+            title="Font Size / അക്ഷരവലിപ്പം"
+            aria-label="Font Size"
+          >
+            <option value="default">Size: Default</option>
+            <option value="14px">14px - Small</option>
+            <option value="16px">16px - Normal</option>
+            <option value="18px">18px - Standard</option>
+            <option value="20px">20px - Medium</option>
+            <option value="24px">24px - Large</option>
+            <option value="28px">28px - Extra Large</option>
+            <option value="32px">32px - Headline</option>
+          </select>
+        </div>
 
         <div className="h-4 w-px bg-gray-300 mx-1" />
 

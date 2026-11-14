@@ -70,7 +70,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         </div>
 
         {/* Title */}
-        <h1 className="text-2xl sm:text-4xl lg:text-5xl font-malayalam font-bold text-primary leading-tight mb-6">
+        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-malayalam font-bold text-primary leading-normal sm:leading-relaxed lg:leading-[1.5] mb-6 sm:mb-8">
           {post.title}
         </h1>
 
@@ -113,56 +113,52 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
         </div>
       )}
 
-      {/* 3. Grid: Main Content & Sidebar */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 max-w-6xl mx-auto">
-        {/* Main Editorial Content Column */}
-        <div className="lg:col-span-8">
-          {/* Action Toolbar above content on desktop */}
-          <div className="flex flex-wrap items-center justify-between pb-4 mb-8 border-b border-gray-100 gap-4">
-            <LikeButton postId={post.id} initialLikes={post.likes_count} />
-            <div className="flex items-center gap-4">
-              <FontResizer />
-              <ShareButtons title={post.title} />
-            </div>
+      {/* 3. Main Article Content Container */}
+      <div className="max-w-4xl mx-auto">
+        {/* Action Toolbar above content on desktop */}
+        <div className="flex flex-wrap items-center justify-between pb-4 mb-8 border-b border-gray-100 gap-4">
+          <LikeButton postId={post.id} initialLikes={post.likes_count} />
+          <div className="flex items-center gap-4">
+            <FontResizer />
+            <ShareButtons title={post.title} />
           </div>
-
-          {/* Rendered HTML content from Tiptap */}
-          <div
-            id="article-main-content"
-            className="prose prose-lg max-w-none text-base sm:text-lg font-malayalam leading-relaxed text-[#2c3437] select-text"
-            dangerouslySetInnerHTML={{ __html: sanitizeArticleHtml(post.content) }}
-          />
-
-          {/* Tags */}
-          {post.tags && post.tags.length > 0 && (
-            <div className="flex flex-wrap items-center gap-2 mt-10 pt-6 border-t border-gray-100">
-              <span className="text-xs font-semibold text-muted mr-1">Tags:</span>
-              {post.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="px-2.5 py-1 bg-gray-100 text-secondary text-xs rounded-lg font-medium"
-                >
-                  #{tag}
-                </span>
-              ))}
-            </div>
-          )}
-
-          {/* Interactive Comments Section */}
-          <CommentsSection postId={post.id} initialComments={comments} />
         </div>
 
-        {/* Sidebar Column */}
-        <aside className="lg:col-span-4 space-y-8">
-          {/* Author Bio Card */}
-          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm text-center">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-accent to-brand-azure text-white flex items-center justify-center font-bold text-xl mx-auto mb-3 shadow-royal">
-              {post.author_name.charAt(0).toUpperCase()}
-            </div>
-            <h3 className="font-bold text-base text-primary mb-1">
+        {/* Rendered HTML content from Tiptap */}
+        <div
+          id="article-main-content"
+          className="prose prose-lg max-w-none text-base sm:text-lg font-malayalam leading-relaxed text-[#2c3437] select-text"
+          dangerouslySetInnerHTML={{ __html: sanitizeArticleHtml(post.content) }}
+        />
+
+        {/* Tags */}
+        {post.tags && post.tags.length > 0 && (
+          <div className="flex flex-wrap items-center gap-2 mt-10 pt-6 border-t border-gray-100">
+            <span className="text-xs font-semibold text-muted mr-1">Tags:</span>
+            {post.tags.map((tag) => (
+              <span
+                key={tag}
+                className="px-2.5 py-1 bg-gray-100 text-secondary text-xs rounded-lg font-medium"
+              >
+                #{tag}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Author Bio Card (Moved below content) */}
+        <div className="bg-surface p-6 sm:p-8 rounded-3xl border border-gray-100 flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6 text-center sm:text-left mt-12 mb-12 shadow-sm">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-accent to-brand-azure text-white flex items-center justify-center font-bold text-xl flex-shrink-0 shadow-royal">
+            {post.author_name.charAt(0).toUpperCase()}
+          </div>
+          <div className="flex-1">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-muted block mb-1">
+              Author
+            </span>
+            <h3 className="font-bold text-lg text-primary mb-1">
               {post.author_name}
             </h3>
-            <p className="text-xs text-secondary leading-relaxed mb-4">
+            <p className="text-xs sm:text-sm text-secondary leading-relaxed mb-4">
               Writer and contributor at Al Irshad. Exploring ideas at the intersection of philosophy, culture, and social reform.
             </p>
             <Link
@@ -172,21 +168,28 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
               View All Articles
             </Link>
           </div>
+        </div>
 
-          {/* Sticky Container for Related Posts */}
-          <div className="sticky top-24 space-y-6">
-            <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-muted mb-4 pb-2 border-b border-gray-100">
+        {/* Related Reading (Moved below author bio card) */}
+        {relatedPosts.length > 0 && (
+          <section className="mt-12 pt-10 border-t border-gray-100 mb-12">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-sm sm:text-base font-bold uppercase tracking-wider text-primary">
                 Related Reading
-              </h4>
-              <div className="space-y-2">
-                {relatedPosts.map((rPost) => (
-                  <ArticleCard key={rPost.id} post={rPost} variant="compact" />
-                ))}
-              </div>
+              </h3>
             </div>
-          </div>
-        </aside>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {relatedPosts.map((rPost) => (
+                <ArticleCard key={rPost.id} post={rPost} variant="standard" />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Interactive Comments Section */}
+        <div className="mt-12 pt-10 border-t border-gray-100">
+          <CommentsSection postId={post.id} initialComments={comments} />
+        </div>
       </div>
 
       {/* Client-side view tracking script */}

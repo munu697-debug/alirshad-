@@ -188,7 +188,7 @@ export default async function HomePage() {
       )}
 
       {/* 5. Editorial Newsletter Callout Banner */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#05112E] via-[#0A2266] to-[#0056FF] rounded-3xl p-8 sm:p-12 text-white shadow-royal-lg mb-12 border border-blue-900/40">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#1A0505] via-[#4D0A0A] to-[#E62727] rounded-3xl p-8 sm:p-12 text-white shadow-royal-lg mb-12 border border-red-900/40">
         <div className="absolute -top-24 -right-24 w-80 h-80 bg-accent/30 rounded-full blur-3xl pointer-events-none" />
         <div className="max-w-2xl mx-auto text-center relative z-10">
           <span className="px-3.5 py-1 bg-white/15 backdrop-blur-md text-white border border-white/25 rounded-full text-xs font-semibold uppercase tracking-wider mb-4 inline-block">
@@ -197,7 +197,7 @@ export default async function HomePage() {
           <h2 className="text-2xl sm:text-3xl font-bold font-sans mb-3 text-white tracking-tight">
             Stay Connected with Thoughtful Perspectives
           </h2>
-          <p className="text-xs sm:text-sm text-blue-100/90 leading-relaxed mb-6">
+          <p className="text-xs sm:text-sm text-red-100/90 leading-relaxed mb-6">
             Get insightful essays, cultural dialogues, and literary critiques delivered directly to your inbox every week.
           </p>
           <div className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">

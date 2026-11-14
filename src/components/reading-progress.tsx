@@ -25,7 +25,7 @@ export function ReadingProgress() {
       className="fixed top-0 left-0 h-[4px] z-[2000] transition-all duration-100 ease-out pointer-events-none"
       style={{
         width: `${progress}%`,
-        background: "linear-gradient(90deg, #2277FF 0%, #0056FF 100%)",
+        background: "linear-gradient(90deg, #FF4D4D 0%, #E62727 100%)",
       }}
     />
   );

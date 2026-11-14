@@ -222,7 +222,7 @@ export function Navbar() {
                   <Link
                     href="/signup"
                     prefetch={true}
-                    className="text-xs sm:text-sm font-semibold px-4 py-2 rounded-full bg-accent text-white hover:bg-accent-hover shadow-[0_4px_14px_rgba(0,86,255,0.30)] hover:shadow-[0_6px_20px_rgba(0,86,255,0.40)] transition-all duration-200"
+                    className="text-xs sm:text-sm font-semibold px-4 py-2 rounded-full bg-accent text-white hover:bg-accent-hover shadow-[0_4px_14px_rgba(230,39,39,0.30)] hover:shadow-[0_6px_20px_rgba(230,39,39,0.40)] transition-all duration-200"
                   >
                     Subscribe
                   </Link>
@@ -246,12 +246,21 @@ export function Navbar() {
               </Link>
 
               <Link
+                href="/about"
+                className={`px-3 py-1.5 rounded-lg whitespace-nowrap transition-colors ${
+                  pathname === "/about" ? "text-accent bg-accent-light font-bold" : "hover:text-accent hover:bg-accent-light/40"
+                }`}
+              >
+                About
+              </Link>
+
+              <Link
                 href="/issues"
                 className={`px-3 py-1.5 rounded-lg whitespace-nowrap transition-colors ${
                   pathname.startsWith("/issue") ? "text-accent bg-accent-light font-bold" : "hover:text-accent hover:bg-accent-light/40"
                 }`}
               >
-                Issues / പതിപ്പുകൾ
+                Issues
               </Link>
 
               {categories.map((cat) => (
@@ -271,19 +280,10 @@ export function Navbar() {
               <Link
                 href="/archive"
                 className={`px-3 py-1.5 rounded-lg whitespace-nowrap transition-colors ${
-                  pathname === "/archive" ? "text-accent bg-accent-light" : "hover:text-accent hover:bg-gray-50"
+                  pathname === "/archive" ? "text-accent bg-accent-light font-bold" : "hover:text-accent hover:bg-accent-light/40"
                 }`}
               >
                 Archive
-              </Link>
-
-              <Link
-                href="/about"
-                className={`px-3 py-1.5 rounded-lg whitespace-nowrap transition-colors ${
-                  pathname === "/about" ? "text-accent bg-accent-light" : "hover:text-accent hover:bg-gray-50"
-                }`}
-              >
-                About
               </Link>
             </nav>
           </div>
@@ -374,10 +374,16 @@ export function Navbar() {
               Home
             </Link>
             <Link
+              href="/about"
+              className="block px-3 py-2 text-sm font-semibold rounded-lg text-primary hover:bg-gray-50"
+            >
+              About Us
+            </Link>
+            <Link
               href="/issues"
               className="block px-3 py-2 text-sm font-semibold rounded-lg text-primary hover:bg-gray-50"
             >
-              Magazine Issues (പതിപ്പുകൾ)
+              Issues
             </Link>
             <Link
               href="/archive"
@@ -390,12 +396,6 @@ export function Navbar() {
               className="block px-3 py-2 text-sm font-semibold rounded-lg text-primary hover:bg-gray-50"
             >
               Authors
-            </Link>
-            <Link
-              href="/about"
-              className="block px-3 py-2 text-sm font-semibold rounded-lg text-primary hover:bg-gray-50"
-            >
-              About Us
             </Link>
             <Link
               href="/contact"

@@ -24,6 +24,20 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.webp" />
         <link
           rel="preload"
+          href="/Manjari/Manjari-Regular.ttf"
+          as="font"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          href="/Manjari/Manjari-Bold.ttf"
+          as="font"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
           href="/Noto_Serif_Malayalam/NotoSerifMalayalam-VariableFont_wght.ttf"
           as="font"
           type="font/ttf"

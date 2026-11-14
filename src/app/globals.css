@@ -1,4 +1,29 @@
 
+/* Local Manjari Font Faces from /public/Manjari */
+@font-face {
+  font-family: 'Manjari';
+  src: url('/Manjari/Manjari-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Manjari';
+  src: url('/Manjari/Manjari-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Manjari';
+  src: url('/Manjari/Manjari-Thin.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Local Noto Serif Malayalam Font Faces from /public/Noto_Serif_Malayalam */
 @font-face {
   font-family: 'Noto Serif Malayalam';
@@ -68,15 +93,15 @@
   --font-site: var(--font-serif), var(--font-noto-serif), serif;
   --bg-color: #ffffff;
   --header-bg: #ffffff;
-  --accent: #0056FF;        /* 01 Royal Blue */
-  --accent-hover: #2277FF;  /* 02 Azure Blue */
-  --accent-light: #E3E7FC;  /* 04 Soft Lavender */
-  --accent-dark: #0036CC;
+  --accent: #E62727;        /* Primary Brand Crimson */
+  --accent-hover: #cf1f1f;  /* Deep Crimson Hover */
+  --accent-light: #FEE8E8;  /* Soft Red Background Tint */
+  --accent-dark: #b91c1c;
   --text-primary: #000000;  /* 03 Black */
   --text-secondary: #334155;
   --card-bg: #ffffff;
-  --card-shadow: 0 4px 20px rgba(0, 86, 255, 0.04);
-  --card-shadow-hover: 0 12px 30px rgba(0, 86, 255, 0.12);
+  --card-shadow: 0 4px 20px rgba(230, 39, 39, 0.04);
+  --card-shadow-hover: 0 12px 30px rgba(230, 39, 39, 0.12);
   --border-color: #E2E8F0;
   --error: #f04438;
   --success: #12b76a;
@@ -93,16 +118,136 @@ body {
 }
 
 ::selection {
-  background-color: #E3E7FC;
-  color: #0056FF;
+  background-color: #FEE8E8;
+  color: #E62727;
+}
+
+/* Explicit Brand Crimson Accent Overrides (#E62727) */
+.text-accent,
+a.text-accent,
+button.text-accent,
+span.text-accent,
+svg.text-accent,
+.group:hover .group-hover\:text-accent {
+  color: #E62727 !important;
+}
+
+.hover\:text-accent:hover {
+  color: #E62727 !important;
+}
+
+.hover\:text-accent-hover:hover {
+  color: #cf1f1f !important;
+}
+
+.bg-accent,
+button.bg-accent,
+a.bg-accent,
+span.bg-accent {
+  background-color: #E62727 !important;
+}
+
+.hover\:bg-accent:hover {
+  background-color: #E62727 !important;
+}
+
+.hover\:bg-accent-hover:hover {
+  background-color: #cf1f1f !important;
+}
+
+.bg-accent-light {
+  background-color: #FEE8E8 !important;
+}
+
+.hover\:bg-accent-light\/40:hover {
+  background-color: rgba(254, 232, 232, 0.6) !important;
+}
+
+.border-accent {
+  border-color: #E62727 !important;
+}
+
+.border-accent\/30 {
+  border-color: rgba(230, 39, 39, 0.3) !important;
+}
+
+.border-accent\/25 {
+  border-color: rgba(230, 39, 39, 0.25) !important;
+}
+
+.border-accent\/10 {
+  border-color: rgba(230, 39, 39, 0.1) !important;
+}
+
+.bg-accent\/10 {
+  background-color: rgba(230, 39, 39, 0.1) !important;
+}
+
+.bg-accent\/20 {
+  background-color: rgba(230, 39, 39, 0.2) !important;
+}
+
+.bg-accent\/30 {
+  background-color: rgba(230, 39, 39, 0.3) !important;
+}
+
+.focus\:border-accent:focus {
+  border-color: #E62727 !important;
 }
 
 .font-malayalam {
-  font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, "Noto Serif Malayalam", "Noto Serif Malayalam Fallback", serif;
+  font-family: 'Manjari', 'Noto Serif Malayalam', sans-serif;
 }
 
 .font-editorial {
-  font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, "Noto Serif Malayalam", "Noto Serif Malayalam Fallback", serif;
+  font-family: 'Manjari', 'Noto Serif Malayalam', serif;
+}
+
+/* Dynamic Font Size Control for Article Content */
+#article-main-content {
+  --article-font-size: 1.125rem;
+  --article-line-height: 1.9;
+}
+
+#article-main-content,
+#article-main-content p,
+#article-main-content li,
+#article-main-content span:not([style*="font-size"]),
+#article-main-content div {
+  font-size: var(--article-font-size);
+  line-height: var(--article-line-height) !important;
+}
+
+#article-main-content p {
+  text-align: justify;
+  text-justify: inter-word;
+  text-indent: 2rem;
+}
+
+#article-main-content h1,
+#article-main-content h2,
+#article-main-content h3,
+#article-main-content h4,
+#article-main-content ul,
+#article-main-content ol,
+#article-main-content li,
+#article-main-content blockquote {
+  text-indent: 0;
+}
+
+#article-main-content h1 {
+  font-size: calc(var(--article-font-size) * 1.8) !important;
+  line-height: 1.4 !important;
+}
+
+#article-main-content h2 {
+  font-size: calc(var(--article-font-size) * 1.5) !important;
+  line-height: 1.45 !important;
+}
+
+#article-main-content h3 {
+  font-size: calc(var(--article-font-size) * 1.3) !important;
+  line-height: 1.5 !important;
 }
 
 /* Custom scrollbars */
@@ -122,6 +267,13 @@ body {
 .prose p {
   margin-bottom: 1.5rem;
   line-height: 1.85;
+  text-align: justify;
+  text-justify: inter-word;
+  text-indent: 2rem;
+}
+
+.prose h1, .prose h2, .prose h3, .prose h4, .prose ul, .prose ol, .prose li, .prose blockquote {
+  text-indent: 0;
 }
 
 .prose h1, .prose h2, .prose h3 {
@@ -132,12 +284,12 @@ body {
 }
 
 .prose blockquote {
-  border-left: 4px solid #0056FF;
+  border-left: 4px solid #E62727;
   padding-left: 1.25rem;
   font-style: italic;
   color: #1e293b;
   margin: 1.5rem 0;
-  background: #F4F6FE;
+  background: #FFF5F5;
   padding: 1rem 1.25rem;
   border-radius: 0 0.75rem 0.75rem 0;
 }
@@ -145,5 +297,5 @@ body {
 .prose img {
   border-radius: 1rem;
   margin: 2rem 0;
-  box-shadow: 0 10px 25px -5px rgba(0, 86, 255, 0.08);
+  box-shadow: 0 10px 25px -5px rgba(230, 39, 39, 0.08);
 }

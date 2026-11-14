@@ -7,20 +7,20 @@ Noto Serif Malayalam is a variable font with this axis:
   wght
 
 This means all the styles are contained in a single file:
-  NotoSerifMalayalam-VariableFont_wght.ttf
+  Noto_Serif_Malayalam/NotoSerifMalayalam-VariableFont_wght.ttf
 
 If your app fully supports variable fonts, you can now pick intermediate styles
 that aren’t available as static fonts. Not all apps support variable fonts, and
 in those cases you can use the static font files for Noto Serif Malayalam:
-  static/NotoSerifMalayalam-Thin.ttf
-  static/NotoSerifMalayalam-ExtraLight.ttf
-  static/NotoSerifMalayalam-Light.ttf
-  static/NotoSerifMalayalam-Regular.ttf
-  static/NotoSerifMalayalam-Medium.ttf
-  static/NotoSerifMalayalam-SemiBold.ttf
-  static/NotoSerifMalayalam-Bold.ttf
-  static/NotoSerifMalayalam-ExtraBold.ttf
-  static/NotoSerifMalayalam-Black.ttf
+  Noto_Serif_Malayalam/static/NotoSerifMalayalam-Thin.ttf
+  Noto_Serif_Malayalam/static/NotoSerifMalayalam-ExtraLight.ttf
+  Noto_Serif_Malayalam/static/NotoSerifMalayalam-Light.ttf
+  Noto_Serif_Malayalam/static/NotoSerifMalayalam-Regular.ttf
+  Noto_Serif_Malayalam/static/NotoSerifMalayalam-Medium.ttf
+  Noto_Serif_Malayalam/static/NotoSerifMalayalam-SemiBold.ttf
+  Noto_Serif_Malayalam/static/NotoSerifMalayalam-Bold.ttf
+  Noto_Serif_Malayalam/static/NotoSerifMalayalam-ExtraBold.ttf
+  Noto_Serif_Malayalam/static/NotoSerifMalayalam-Black.ttf
 
 Get started
 -----------

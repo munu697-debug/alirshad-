@@ -56,7 +56,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-[75vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 animate-fade-in">
-      <div className="max-w-md w-full bg-white p-8 sm:p-10 rounded-3xl border border-gray-100 shadow-[0_4px_25px_rgba(0,86,255,0.06)]">
+      <div className="max-w-md w-full bg-white p-8 sm:p-10 rounded-3xl border border-gray-100 shadow-[0_4px_25px_rgba(230,39,39,0.06)]">
         <div className="text-center mb-8">
           <Link href="/" prefetch={true} className="inline-block mb-4">
             <div className="h-10 w-52 mx-auto flex items-center justify-center">
@@ -146,7 +146,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 bg-accent hover:bg-accent-hover text-white font-bold text-xs sm:text-sm rounded-xl shadow-[0_4px_14px_rgba(0,86,255,0.30)] hover:shadow-[0_6px_20px_rgba(0,86,255,0.40)] active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75"
+            className="w-full py-3.5 bg-accent hover:bg-accent-hover text-white font-bold text-xs sm:text-sm rounded-xl shadow-[0_4px_14px_rgba(230,39,39,0.30)] hover:shadow-[0_6px_20px_rgba(230,39,39,0.40)] active:scale-[0.98] transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-75"
           >
             {loading ? (
               <>
