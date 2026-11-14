@@ -105,7 +105,7 @@ export function TiptapEditor({
       }),
       TextAlign.configure({
         types: ["heading", "paragraph"],
-        defaultAlignment: "justify",
+        defaultAlignment: "left",
       }),
       Placeholder.configure({
         placeholder,

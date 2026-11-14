@@ -218,10 +218,42 @@ span.bg-accent {
   line-height: var(--article-line-height) !important;
 }
 
-#article-main-content p {
-  text-align: justify;
-  text-justify: inter-word;
-  text-indent: 2rem;
+#article-main-content,
+#article-main-content p,
+#article-main-content div,
+#article-main-content span:not([style*="font-size"]),
+.prose p {
+  text-align: left !important;
+  text-justify: auto !important;
+  word-spacing: normal !important;
+  letter-spacing: normal !important;
+}
+
+#article-main-content p,
+.prose p {
+  text-align: left !important;
+  word-spacing: normal !important;
+  text-indent: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  #article-main-content p,
+  .prose p {
+    text-indent: 2rem;
+  }
+}
+
+/* Explicit alignment overrides set via editor (center / right) */
+#article-main-content p[style*="text-align: center"],
+.prose p[style*="text-align: center"] {
+  text-align: center !important;
+  text-indent: 0 !important;
+}
+
+#article-main-content p[style*="text-align: right"],
+.prose p[style*="text-align: right"] {
+  text-align: right !important;
+  text-indent: 0 !important;
 }
 
 #article-main-content h1,
@@ -267,9 +299,9 @@ span.bg-accent {
 .prose p {
   margin-bottom: 1.5rem;
   line-height: 1.85;
-  text-align: justify;
-  text-justify: inter-word;
-  text-indent: 2rem;
+  text-align: left;
+  word-spacing: normal;
+  text-indent: 1.5rem;
 }
 
 .prose h1, .prose h2, .prose h3, .prose h4, .prose ul, .prose ol, .prose li, .prose blockquote {

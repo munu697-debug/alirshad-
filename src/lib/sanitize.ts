@@ -23,6 +23,24 @@ export function sanitizeArticleHtml(html: string): string {
     allowedSchemesByTag: { img: ["http", "https"] },
     transformTags: {
       a: sanitizeHtml.simpleTransform("a", { rel: "noopener noreferrer nofollow" }),
+      p: (tagName, attribs) => {
+        if (attribs.style && attribs.style.includes("justify")) {
+          attribs.style = attribs.style.replace(/text-align:\s*justify;?/gi, "text-align: left;");
+        }
+        return { tagName, attribs };
+      },
+      span: (tagName, attribs) => {
+        if (attribs.style && attribs.style.includes("justify")) {
+          attribs.style = attribs.style.replace(/text-align:\s*justify;?/gi, "text-align: left;");
+        }
+        return { tagName, attribs };
+      },
+      div: (tagName, attribs) => {
+        if (attribs.style && attribs.style.includes("justify")) {
+          attribs.style = attribs.style.replace(/text-align:\s*justify;?/gi, "text-align: left;");
+        }
+        return { tagName, attribs };
+      },
     },
   });
 }

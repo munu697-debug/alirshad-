@@ -210,23 +210,13 @@ export function Navbar() {
                 </div>
               ) : (
                 /* Guest State */
-                <>
-                  <Link
-                    href="/login"
-                    prefetch={true}
-                    className="text-xs sm:text-sm font-semibold text-secondary hover:text-accent transition-colors px-3 py-1.5 rounded-lg hover:bg-accent-light/40"
-                  >
-                    Log In
-                  </Link>
-
-                  <Link
-                    href="/signup"
-                    prefetch={true}
-                    className="text-xs sm:text-sm font-semibold px-4 py-2 rounded-full bg-accent text-white hover:bg-accent-hover shadow-[0_4px_14px_rgba(230,39,39,0.30)] hover:shadow-[0_6px_20px_rgba(230,39,39,0.40)] transition-all duration-200"
-                  >
-                    Subscribe
-                  </Link>
-                </>
+                <Link
+                  href="/login"
+                  prefetch={true}
+                  className="text-xs sm:text-sm font-semibold px-4 py-2 rounded-full bg-accent text-white hover:bg-accent-hover shadow-[0_4px_14px_rgba(230,39,39,0.30)] hover:shadow-[0_6px_20px_rgba(230,39,39,0.40)] transition-all duration-200"
+                >
+                  Log In
+                </Link>
               )}
             </div>
           </div>
@@ -348,18 +338,12 @@ export function Navbar() {
                 </div>
               </div>
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center">
                 <Link
                   href="/login"
-                  className="flex-1 py-2 text-center text-xs font-semibold text-primary bg-surface border border-gray-200 rounded-xl"
+                  className="w-full py-2.5 text-center text-xs font-semibold text-white bg-accent hover:bg-accent-hover rounded-xl shadow-royal transition-colors"
                 >
                   Log In
-                </Link>
-                <Link
-                  href="/signup"
-                  className="flex-1 py-2 text-center text-xs font-semibold text-white bg-accent rounded-xl shadow-royal"
-                >
-                  Subscribe
                 </Link>
               </div>
             )}
